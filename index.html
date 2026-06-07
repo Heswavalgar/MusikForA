@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MusikForAll</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#c8f060">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+</head>
+<body>
+
+<!-- ── LOGIN ────────────────────────────────────────────────── -->
+<section id="loginPage" class="login-page">
+  <div class="login-card">
+    <h1>🎵 MusikForAll</h1>
+    <p>Semua musik dalam satu tempat</p>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button id="loginBtn">Masuk</button>
+    <button id="registerBtn">Daftar</button>
+  </div>
+</section>
+
+<!-- ── APP ──────────────────────────────────────────────────── -->
+<div id="app" class="app hidden">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <button class="top-bar-logo" id="menuBtn">🎵</button>
+    <span class="top-bar-title" id="pageTitle">Home</span>
+    <div class="top-bar-right"></div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- HOME PAGE -->
+    <div class="page active" id="homePage">
+
+      <!-- Vinyl + Now Playing -->
+      <div class="vinyl-section">
+        <div class="vinyl-wrap">
+          <div class="vinyl-disc" id="vinylDisc">
+            <div class="vinyl-cover" id="vinylCover">🎧</div>
+            <div class="vinyl-hole"></div>
+          </div>
+        </div>
+        <div class="vinyl-info">
+          <h2 id="heroTitle">MusikForAll</h2>
+          <p id="heroArtist">Pilih lagu untuk memulai</p>
+        </div>
+      </div>
+
+      <!-- Song List -->
+      <div class="section-label">Lagu</div>
+      <div class="song-list" id="albumGrid"></div>
+
+    </div>
+
+    <!-- SEARCH PAGE -->
+    <div class="page" id="searchPage">
+      <div class="search-wrap">
+        <input type="text" class="search-input" id="searchPageInput" placeholder="Cari judul atau artis...">
+      </div>
+      <div class="section-label">Hasil</div>
+      <div class="song-list" id="searchResults">
+        <p style="color:#6b6b7a;padding:10px 10px">Ketik untuk mencari lagu.</p>
+      </div>
+    </div>
+
+    <!-- LIBRARY PAGE -->
+    <div class="page" id="libraryPage">
+    </div>
+
+  </div>
+
+  <!-- MINI PLAYER -->
+  <div class="mini-player" id="miniPlayer">
+    <img class="mini-cover" id="miniCover" src="" alt="cover">
+    <div class="mini-info">
+      <div class="mini-title" id="currentSong">Tidak ada lagu</div>
+      <div class="mini-artist" id="currentArtist">-</div>
+    </div>
+    <div class="mini-controls">
+      <button class="mini-btn" id="prevBtn">⏮</button>
+      <button class="mini-btn" id="miniPlayBtn">▶</button>
+      <button class="mini-btn" id="nextBtn">⏭</button>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="bottom-item active" id="homeTab">
+      <span class="nav-icon">🏠</span>
+      Beranda
+    </button>
+    <button class="bottom-item" id="searchTab">
+      <span class="nav-icon">🔍</span>
+      Search
+    </button>
+    <button class="bottom-item" id="libraryTab">
+      <span class="nav-icon">📚</span>
+      Library
+    </button>
+  </nav>
+
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+
+  <!-- HEADER -->
+  <div class="sidebar-header">
+    <div class="sidebar-logo">🎵 MusikForAll</div>
+    <div class="sidebar-profile">
+      <div class="sidebar-avatar" id="sidebarAvatar">👤</div>
+      <div>
+        <div class="sidebar-username" id="sidebarUser">-</div>
+        <div class="sidebar-role">Member</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MENU -->
+  <div class="sidebar-menu">
+    <button class="sidebar-item">⚙️ Pengaturan</button>
+    <button class="sidebar-item">📬 Kotak Masuk</button>
+    <button class="sidebar-item">👑 Langganan</button>
+    <button class="sidebar-item">📊 Pusat Aktivitas</button>
+  </div>
+
+  <!-- LOGOUT -->
+  <div class="sidebar-footer">
+    <button class="sidebar-item logout-btn" onclick="logout()">🚪 Keluar</button>
+  </div>
+
+</div>
+
+<!-- OVERLAY — di luar sidebar -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- FULL PLAYER -->
+<div class="full-player hidden" id="fullPlayer">
+
+  <div class="fp-header">
+    <button class="fp-back" id="fpBack">︎﹀</button>
+    <span class="fp-title">Sedang Diputar</span>
+    <div></div>
+  </div>
+
+  <div class="fp-cover-wrap">
+    <div class="fp-vinyl" id="fpVinyl">
+      <div class="fp-vinyl-cover" id="fpVinylCover">🎧</div>
+      <div class="vinyl-hole"></div>
+    </div>
+  </div>
+
+  <div class="fp-info">
+  <h2 id="fpTitle">MusikForAll</h2>
+  <p id="fpArtist">-</p>
+</div>
+
+<div class="fp-actions">
+
+  <div class="fp-like-wrap">
+    <button id="fpFav" class="fp-fav"></button>
+    <span>Like</span>
+  </div>
+
+  <button id="fpShuffle" class="fp-text-btn">
+    🔀 Shuffle
+  </button>
+
+</div>
+
+<div class="fp-progress">
+  <input type="range" id="fpProgressBar" min="0" max="100" value="0">
+
+  <div class="fp-time">
+    <span id="fpCurrent">0:00</span>
+    <span id="fpDuration">0:00</span>
+  </div>
+</div>
+
+<div class="fp-controls">
+  <button class="fp-btn" id="fpPrev">⏮</button>
+  <button class="fp-btn fp-play" id="fpPlay">▶</button>
+  <button class="fp-btn" id="fpNext">⏭</button>
+</div>
+
+<div class="fp-volume">
+  🔈
+  <input
+    type="range"
+    id="fpVolume"
+    min="0"
+    max="1"
+    step="0.01"
+    value="1"
+  >
+  🔊
+</div>
+
+<div class="fp-queue">
+  <button id="fpQueue" class="fp-text-btn small">
+    Queue
+  </button>
+</div>
+
+<!-- AUDIO -->
+<audio id="audio"></audio>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
