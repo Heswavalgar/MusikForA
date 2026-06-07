@@ -122,55 +122,158 @@
 
 <!-- KOTAK MASUK PAGE -->
 <div class="page" id="kotakmasukPage">
+  <div class="inbox-wrap">
 
-  <div class="sidebar-page-content">
-
-    <h2>📬 Kotak Masuk</h2>
-
-    <div class="empty-friends">
-      Tidak ada teman
+    <!-- TEMAN -->
+    <div class="inbox-section-label">Teman</div>
+    <div class="inbox-item" id="inboxFriendBtn">
+      <div class="inbox-avatar">👥</div>
+      <div class="inbox-info">
+        <div class="inbox-name">Daftar Teman</div>
+        <div class="inbox-preview">Cari & tambah teman di sini</div>
+      </div>
+      <span class="inbox-chevron">›</span>
     </div>
 
-    <div class="notif-title">
-      🔔 Notifikasi Pengguna
+    <!-- NOTIFIKASI -->
+    <div class="inbox-section-label" style="margin-top:20px">Notifikasi</div>
+
+    <div class="inbox-item" id="inboxSistemBtn">
+      <div class="inbox-avatar">👤</div>
+      <div class="inbox-info">
+        <div class="inbox-name">Sistem</div>
+        <div class="inbox-preview">Selamat datang di MusikForAll</div>
+      </div>
+      <span class="inbox-chevron">›</span>
     </div>
 
-    <div class="notif-list">
-
-      <div class="notif-item">
-        <div class="notif-avatar">👤</div>
-        <div class="notif-content">
-          <div class="notif-name">Sistem</div>
-          <div class="notif-text">
-            Selamat datang di MusikForAll
-          </div>
-        </div>
+    <div class="inbox-item" id="inboxAppBtn">
+      <div class="inbox-avatar">🎵</div>
+      <div class="inbox-info">
+        <div class="inbox-name">MusikForAll</div>
+        <div class="inbox-preview">Akun berhasil dibuat</div>
       </div>
+      <span class="inbox-chevron">›</span>
+    </div>
 
-      <div class="notif-item">
-        <div class="notif-avatar">🎵</div>
-        <div class="notif-content">
-          <div class="notif-name">MusikForAll</div>
-          <div class="notif-text">
-            Akun berhasil dibuat
-          </div>
-        </div>
+    <div class="inbox-item" id="inboxUpdateBtn">
+      <div class="inbox-avatar">✨</div>
+      <div class="inbox-info">
+        <div class="inbox-name">Update</div>
+        <div class="inbox-preview">Fitur chat segera hadir</div>
       </div>
-
-      <div class="notif-item">
-        <div class="notif-avatar">✨</div>
-        <div class="notif-content">
-          <div class="notif-name">Update</div>
-          <div class="notif-text">
-            Fitur chat segera hadir
-          </div>
-        </div>
-      </div>
-
+      <span class="inbox-chevron">›</span>
     </div>
 
   </div>
+</div>
 
+<!-- SUB PAGE: TEMAN (WhatsApp style) -->
+<div class="full-player hidden" id="inboxFriendPage">
+  <div class="fp-header">
+    <button class="fp-back" id="inboxFriendBack">︎﹀</button>
+    <span class="fp-title">Teman</span>
+    <div></div>
+  </div>
+  <div class="inbox-friend-body">
+    <div class="inbox-search-wrap">
+      <input type="text" class="search-input" placeholder="Cari username teman..." id="friendSearchInput">
+    </div>
+    <div class="inbox-friend-empty">
+      <div style="font-size:48px;margin-bottom:12px">👥</div>
+      <div style="font-weight:700;font-size:16px;margin-bottom:6px">Belum ada teman</div>
+      <div style="color:#6b6b7a;font-size:13px">Cari username untuk menambah teman</div>
+    </div>
+  </div>
+</div>
+
+<!-- SUB PAGE: SISTEM -->
+<div class="full-player hidden" id="inboxSistemPage">
+  <div class="fp-header">
+    <button class="fp-back" id="inboxSistemBack">︎﹀</button>
+    <span class="fp-title">Sistem</span>
+    <div></div>
+  </div>
+  <div class="inbox-sub-body">
+    <div class="inbox-notif-item">
+      <div class="inbox-notif-icon">🔔</div>
+      <div>
+        <div class="inbox-notif-title">Selamat datang di MusikForAll</div>
+        <div class="inbox-notif-desc">Halo! Akun kamu telah aktif. Nikmati musik favoritmu kapan saja dan di mana saja.</div>
+        <div class="inbox-notif-time">Baru saja</div>
+      </div>
+    </div>
+    <div class="inbox-notif-item">
+      <div class="inbox-notif-icon">🔒</div>
+      <div>
+        <div class="inbox-notif-title">Keamanan akun</div>
+        <div class="inbox-notif-desc">Jaga keamanan akunmu. Jangan bagikan password ke siapapun.</div>
+        <div class="inbox-notif-time">Hari ini</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUB PAGE: MUSIKFORALL -->
+<div class="full-player hidden" id="inboxAppPage">
+  <div class="fp-header">
+    <button class="fp-back" id="inboxAppBack">︎﹀</button>
+    <span class="fp-title">MusikForAll</span>
+    <div></div>
+  </div>
+  <div class="inbox-sub-body">
+    <div class="inbox-notif-item">
+      <div class="inbox-notif-icon">🎉</div>
+      <div>
+        <div class="inbox-notif-title">Akun berhasil dibuat</div>
+        <div class="inbox-notif-desc">Selamat! Akunmu telah berhasil dibuat. Mulai tambahkan lagu favorit ke library-mu.</div>
+        <div class="inbox-notif-time">Saat pendaftaran</div>
+      </div>
+    </div>
+    <div class="inbox-notif-item">
+      <div class="inbox-notif-icon">♥</div>
+      <div>
+        <div class="inbox-notif-title">Fitur Favorit tersedia</div>
+        <div class="inbox-notif-desc">Kamu bisa menyimpan lagu favorit dengan menekan ikon hati di setiap lagu.</div>
+        <div class="inbox-notif-time">Hari ini</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUB PAGE: UPDATE -->
+<div class="full-player hidden" id="inboxUpdatePage">
+  <div class="fp-header">
+    <button class="fp-back" id="inboxUpdateBack">︎﹀</button>
+    <span class="fp-title">Update</span>
+    <div></div>
+  </div>
+  <div class="inbox-sub-body">
+    <div class="inbox-notif-item">
+      <div class="inbox-notif-icon">💬</div>
+      <div>
+        <div class="inbox-notif-title">Fitur chat segera hadir</div>
+        <div class="inbox-notif-desc">Kami sedang mengembangkan fitur chat antar pengguna. Pantau terus updatenya!</div>
+        <div class="inbox-notif-time">v1.1 — Segera</div>
+      </div>
+    </div>
+    <div class="inbox-notif-item">
+      <div class="inbox-notif-icon">🎵</div>
+      <div>
+        <div class="inbox-notif-title">Playlist & Library</div>
+        <div class="inbox-notif-desc">Sekarang kamu bisa membuat playlist sendiri dan mengelola lagu di Library.</div>
+        <div class="inbox-notif-time">v1.0 — Sekarang</div>
+      </div>
+    </div>
+    <div class="inbox-notif-item">
+      <div class="inbox-notif-icon">🔀</div>
+      <div>
+        <div class="inbox-notif-title">Mode Shuffle</div>
+        <div class="inbox-notif-desc">Putar lagu secara acak dengan fitur shuffle di full player.</div>
+        <div class="inbox-notif-time">v1.0 — Sekarang</div>
+      </div>
+    </div>
+  </div>
 </div>
 
     <!-- LANGGANAN PAGE -->
@@ -243,6 +346,10 @@
       <span class="nav-icon">📚</span>
       Library
     </button>
+    <button class="bottom-item" id="inboxTab">
+      <span class="nav-icon">📬</span>
+      Kotak Masuk
+    </button>
   </nav>
 
 </div>
@@ -274,7 +381,6 @@
   <!-- MENU -->
   <div class="sidebar-menu">
     <button class="sidebar-item" onclick="showSidebarPage('pengaturan')">⚙️ Pengaturan</button>
-    <button class="sidebar-item" onclick="showSidebarPage('kotakmasuk')">📬 Kotak Masuk</button>
     <button class="sidebar-item" onclick="showSidebarPage('langganan')">👑 Langganan</button>
     <button class="sidebar-item" onclick="showSidebarPage('pusataktivitas')">📊 Pusat Aktivitas</button>
   </div>
@@ -385,6 +491,18 @@
   </div>
 </div>
 
+<!-- DELETE PLAYLIST CONFIRM MODAL -->
+<div class="modal-overlay hidden" id="deletePlaylistModal">
+  <div class="modal-card">
+    <div class="modal-title">Hapus Playlist?</div>
+    <div class="modal-subtitle">Playlist <span id="deletePlaylistName"></span> akan dihapus permanen.</div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="modal-close" id="deletePlaylistCancel" style="flex:1">Batal</button>
+      <button id="deletePlaylistConfirm" style="flex:1;padding:13px;background:#f87171;color:#fff;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;">Hapus</button>
+    </div>
+  </div>
+</div>
+
 <!-- LOGOUT CONFIRM MODAL -->
 <div class="modal-overlay hidden" id="logoutModal">
   <div class="modal-card">
@@ -403,6 +521,21 @@
     <div class="loader-hole"></div>
   </div>
   <div class="loader-text">MusikForAll</div>
+</div>
+
+<!-- PLAYLIST ADD SONGS PAGE (fullscreen) -->
+<div class="full-player hidden" id="playlistAddPage">
+  <div class="fp-header">
+    <button class="fp-back" id="playlistAddBack">︎﹀</button>
+    <span class="fp-title" id="playlistAddTitle">Tambah Lagu</span>
+    <div></div>
+  </div>
+  <div class="playlist-add-body">
+    <div class="search-wrap" style="padding:12px 16px 8px">
+      <input type="text" class="search-input" id="playlistAddSearch" placeholder="Cari judul atau artis...">
+    </div>
+    <div id="playlistAddResults" style="flex:1;overflow-y:auto;padding-bottom:24px;"></div>
+  </div>
 </div>
 
 <!-- PROFILE PAGE (fullscreen) -->
