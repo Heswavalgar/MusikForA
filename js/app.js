@@ -51,6 +51,7 @@ const libraryPage = document.getElementById('libraryPage');
 const homeTab     = document.getElementById('homeTab');
 const searchTab   = document.getElementById('searchTab');
 const libraryTab  = document.getElementById('libraryTab');
+const inboxTab    = document.getElementById('inboxTab');
 const searchInput = document.getElementById('searchPageInput');
 const searchResults = document.getElementById('searchResults');
 const searchHistorySection = document.getElementById('searchHistorySection');
@@ -504,10 +505,11 @@ function setFpPanel(idx, animate = true) {
   currentPanel = Math.max(0, Math.min(2, idx));
   if (!fpSwipeContainer) return;
   if (!animate) {
-    // Disable transition first, then set transform in next frame to avoid flash
+    // Disable transition, set transform, then re-enable in next frame
     fpSwipeContainer.style.transition = 'none';
+    fpSwipeContainer.style.transform = `translateX(calc(-${currentPanel} * 100vw))`;
     requestAnimationFrame(() => {
-      fpSwipeContainer.style.transform = `translateX(calc(-${currentPanel} * 100vw))`;
+      fpSwipeContainer.style.transition = 'transform 0.35s cubic-bezier(0.4,0,0.2,1)';
     });
   } else {
     fpSwipeContainer.style.transition = 'transform 0.35s cubic-bezier(0.4,0,0.2,1)';
@@ -734,6 +736,7 @@ function showApp() {
   loginPage.classList.add('hidden');
   registerPage.classList.add('hidden');
   app.classList.remove('hidden');
+ 
 
   const user = localStorage.getItem('mfa_username');
   if (user) sidebarUser.textContent = '@' + user;
@@ -742,17 +745,31 @@ function showApp() {
   loadPlaylists();
   loadProfilePhoto();
   loadSongs();
+  
 }
 
 /*Login*/
-if (!data) return showToast('Username atau password salah');
+loginBtn.onclick = async () => {
+  const u = usernameEl.value.trim();
+  const p = passwordEl.value;
+  if (!u || !p) return showToast('Isi username dan password');
+  showLoader();
+  const { data, error } = await db
+    .from('users')
+    .select('*')
+    .eq('username', u)
+    .eq('password', p)
+    .single();
+  hideLoader();
+  if (!data) return showToast('Username atau password salah');
 
-localStorage.setItem('mfa_loggedin', 'true');
-localStorage.setItem('mfa_username', data.username);
-localStorage.setItem('mfa_userid', data.id);
+  localStorage.setItem('mfa_loggedin', 'true');
+  localStorage.setItem('mfa_username', data.username);
+  localStorage.setItem('mfa_userid', data.id);
 
-showToast('Login berhasil 🎵');
-showApp();
+  showToast('Login berhasil 🎵');
+  showApp();
+};
 
 // Navigasi ke halaman daftar
 goRegisterLink.onclick = () => {
@@ -779,16 +796,17 @@ regSubmitBtn.onclick = async () => {
   if (p !== cp) return showToast('Konfirmasi password tidak cocok');
 
   // cek username sudah ada
+  showLoader();
   const { data: existing } = await db
     .from('users')
     .select('username')
     .eq('username', u)
     .single();
 
-  if (existing) return showToast('Username sudah digunakan');
+  if (existing) { hideLoader(); return showToast('Username sudah digunakan'); }
 
   const { error } = await db.from('users').insert([{ username: u, password: p }]);
-  if (error) return showToast('Gagal mendaftar, coba lagi');
+  if (error) { hideLoader(); return showToast('Gagal mendaftar, coba lagi'); }
 
   // langsung login dan masuk ke beranda
   localStorage.setItem('mfa_loggedin', 'true');
@@ -862,13 +880,18 @@ function renderHome() {
 }
 
 // ── RENDER LIST ───────────────────────────────────────────────
-function renderList(container, list, sourceList, fromSearch) {
+function renderList(container, list, sourceList, fromSearch, playlistId) {
   container.innerHTML = '';
   list.forEach((s) => {
     const globalIdx = songs.findIndex(gs => gs.title === s.title && gs.artist === s.artist);
     const item = document.createElement('div');
     item.className = 'song-item';
     if (currentIndex !== -1 && globalIdx === currentIndex) item.classList.add('active-song');
+
+    const extraBtn = playlistId
+      ? `<button class="song-remove-btn" title="Hapus dari playlist">🗑</button>`
+      : `<button class="song-add-btn" title="Tambah ke Playlist">＋</button>`;
+
     item.innerHTML = `
       <img class="song-cover" src="${s.cover || ''}">
       <div class="song-info">
@@ -876,12 +899,12 @@ function renderList(container, list, sourceList, fromSearch) {
         <div class="song-artist">${s.artist}</div>
       </div>
       <button class="song-fav-btn ${isFavoriteSong(s.id) ? 'active' : ''}" data-id="${s.id}" title="Favorit">♥</button>
-      <button class="song-add-btn" title="Tambah ke Playlist">＋</button>
+      ${extraBtn}
       <button class="song-play-btn">▶</button>
     `;
 
     item.onclick = (e) => {
-      if (e.target.closest('.song-fav-btn') || e.target.closest('.song-play-btn') || e.target.closest('.song-add-btn')) return;
+      if (e.target.closest('.song-fav-btn') || e.target.closest('.song-play-btn') || e.target.closest('.song-add-btn') || e.target.closest('.song-remove-btn')) return;
       if (globalIdx !== -1) {
         if (fromSearch) addToSearchHistory(s);
         playSong(globalIdx);
@@ -898,10 +921,23 @@ function renderList(container, list, sourceList, fromSearch) {
       e.stopPropagation();
       await toggleFavoriteSong(s, item.querySelector('.song-fav-btn'));
     };
-    item.querySelector('.song-add-btn').onclick = (e) => {
-      e.stopPropagation();
-      openAddToPlaylistModal(s);
-    };
+
+    if (playlistId) {
+      item.querySelector('.song-remove-btn').onclick = (e) => {
+        e.stopPropagation();
+        const pl = userPlaylists.find(p => p.id === playlistId);
+        if (!pl) return;
+        pl.songs = pl.songs.filter(id => id !== s.id);
+        savePlaylists();
+        showToast(`"${s.title}" dihapus dari playlist`);
+        renderLibrary();
+      };
+    } else {
+      item.querySelector('.song-add-btn').onclick = (e) => {
+        e.stopPropagation();
+        openAddToPlaylistModal(s);
+      };
+    }
 
     container.appendChild(item);
   });
@@ -1067,15 +1103,12 @@ async function toggleFavoriteSong(song, btnEl) {
   const exist = favorites.find(f => f.song_id === song.id);
 
   if (exist) {
-    const { data, error } = await db
-  .from('favorites')
-  .insert([{ username, song_id: song.id }]);
-
-console.log('INSERT FAVORITE');
-console.log('username:', username);
-console.log('song_id:', song.id);
-console.log('data:', data);
-console.log('error:', error);
+    // Sudah favorit → hapus dari DB
+    const { error } = await db
+      .from('favorites')
+      .delete()
+      .eq('username', username)
+      .eq('song_id', song.id);
 
     if (!error) {
       favorites = favorites.filter(f => f.song_id !== song.id);
@@ -1105,15 +1138,15 @@ fpFav.onclick = (e) => {
 };
 
 // ── NAV ───────────────────────────────────────────────────────
-const sidebarPages = ['pengaturan','kotakmasuk','langganan','pusataktivitas'];
-const allPages = ['home','search','library', ...sidebarPages];
+const sidebarPages = ['pengaturan','langganan','pusataktivitas'];
+const allPages = ['home','search','library','kotakmasuk', ...sidebarPages];
 
 function showPage(p) {
   allPages.forEach(name => {
     const el = document.getElementById(name + 'Page');
     if (el) el.classList.remove('active');
   });
-  [homeTab, searchTab, libraryTab].forEach(x => x.classList.remove('active'));
+  [homeTab, searchTab, libraryTab, inboxTab].forEach(x => x && x.classList.remove('active'));
 
   const target = document.getElementById(p + 'Page');
   if (target) target.classList.add('active');
@@ -1121,9 +1154,8 @@ function showPage(p) {
   if (p === 'home') { homeTab.classList.add('active'); pageTitle.textContent = 'Beranda'; }
   else if (p === 'search') { searchTab.classList.add('active'); pageTitle.textContent = 'Search'; renderSearchHistory(); }
   else if (p === 'library') { libraryTab.classList.add('active'); pageTitle.textContent = 'Library'; renderLibrary(); }
-  else {
-  pageTitle.textContent = 'MusikForAll';
-}
+  else if (p === 'kotakmasuk') { inboxTab.classList.add('active'); pageTitle.textContent = 'Kotak Masuk'; }
+  else { pageTitle.textContent = 'MusikForAll'; }
 }
 
 function showSidebarPage(p) {
@@ -1140,6 +1172,7 @@ window.showSidebarPage = showSidebarPage;
 homeTab.onclick = () => showPage('home');
 searchTab.onclick = () => showPage('search');
 libraryTab.onclick = () => showPage('library');
+if (inboxTab) inboxTab.onclick = () => showPage('kotakmasuk');
 
 // ── ACTIVITY STATS ────────────────────────────────────────────
 function updateActivityStats() {
@@ -1174,6 +1207,24 @@ searchInput.oninput = () => {
   }
   renderList(searchResults, filtered, songs, true);
 };
+
+// ── DELETE PLAYLIST CONFIRM ───────────────────────────────────
+function showDeletePlaylistConfirm(playlistId, playlistName) {
+  const modal = document.getElementById('deletePlaylistModal');
+  const nameEl = document.getElementById('deletePlaylistName');
+  if (!modal) return;
+  if (nameEl) nameEl.textContent = `"${playlistName}"`;
+  modal.classList.remove('hidden');
+
+  document.getElementById('deletePlaylistCancel').onclick = () => modal.classList.add('hidden');
+  document.getElementById('deletePlaylistConfirm').onclick = () => {
+    userPlaylists = userPlaylists.filter(p => p.id !== playlistId);
+    savePlaylists();
+    modal.classList.add('hidden');
+    showToast(`Playlist dihapus`);
+    renderLibrary();
+  };
+}
 
 // ── LIBRARY ───────────────────────────────────────────────────
 function renderLibrary() {
@@ -1218,6 +1269,7 @@ function renderLibrary() {
         <span class="library-playlist-icon">🎵</span>
         <span class="library-playlist-name">${pl.name}</span>
         <span class="library-playlist-count">${plSongs.length} lagu</span>
+        <button class="library-playlist-add" data-id="${pl.id}" title="Tambah Lagu">＋</button>
         <button class="library-playlist-del" data-id="${pl.id}" title="Hapus Ruang">✕</button>
         <span class="library-chevron">▾</span>
       </div>
@@ -1229,21 +1281,25 @@ function renderLibrary() {
     if (plSongs.length === 0) {
       container.innerHTML = '<p style="color:#6b6b7a;padding:10px 16px;font-size:13px">Belum ada lagu.</p>';
     } else {
-      renderList(container, plSongs, songs);
+      renderList(container, plSongs, songs, false, pl.id);
     }
 
     sec.querySelector('.library-playlist-header').onclick = (e) => {
       if (e.target.closest('.library-playlist-del')) return;
+      if (e.target.closest('.library-playlist-add')) return;
       const open = container.style.display !== 'none';
       container.style.display = open ? 'none' : 'block';
       sec.querySelector('.library-chevron').textContent = open ? '▾' : '▴';
     };
 
+    sec.querySelector('.library-playlist-add').onclick = (e) => {
+      e.stopPropagation();
+      openPlaylistAddPage(pl.id);
+    };
+
     sec.querySelector('.library-playlist-del').onclick = (e) => {
       e.stopPropagation();
-      userPlaylists = userPlaylists.filter(p => p.id !== pl.id);
-      savePlaylists();
-      renderLibrary();
+      showDeletePlaylistConfirm(pl.id, pl.name);
     };
   });
 
@@ -1276,3 +1332,193 @@ fpShuffle.onclick = () => {
   if (shuffleMode) buildShuffledQueue();
   showToast(shuffleMode ? '🔀 Shuffle aktif' : 'Shuffle nonaktif');
 };
+
+// ── PLAYLIST ADD SONGS PAGE ───────────────────────────────────
+let playlistAddTargetId = null;
+
+function openPlaylistAddPage(playlistId) {
+  playlistAddTargetId = playlistId;
+  const pl = userPlaylists.find(p => p.id === playlistId);
+  const titleEl = document.getElementById('playlistAddTitle');
+  if (titleEl && pl) titleEl.textContent = `Tambah ke "${pl.name}"`;
+  const page = document.getElementById('playlistAddPage');
+  if (page) page.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  const searchEl = document.getElementById('playlistAddSearch');
+  if (searchEl) { searchEl.value = ''; searchEl.focus(); }
+  renderPlaylistAddResults('');
+}
+
+function closePlaylistAddPage() {
+  const page = document.getElementById('playlistAddPage');
+  if (page) page.classList.add('hidden');
+  document.body.style.overflow = '';
+  playlistAddTargetId = null;
+  renderLibrary(); // refresh library setelah selesai
+}
+
+function renderPlaylistAddResults(query) {
+  const container = document.getElementById('playlistAddResults');
+  if (!container) return;
+  const pl = userPlaylists.find(p => p.id === playlistAddTargetId);
+  if (!pl) return;
+
+  const list = query
+    ? songs.filter(s =>
+        s.title.toLowerCase().includes(query) ||
+        s.artist.toLowerCase().includes(query)
+      )
+    : songs;
+
+  container.innerHTML = '';
+  if (list.length === 0) {
+    container.innerHTML = '<p style="color:#6b6b7a;padding:16px 20px">Tidak ada hasil.</p>';
+    return;
+  }
+
+  list.forEach(s => {
+    const inPlaylist = pl.songs.includes(s.id);
+    const item = document.createElement('div');
+    item.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px 20px;cursor:default;';
+    item.innerHTML = `
+      <img src="${s.cover || ''}" onerror="this.style.display='none'"
+        style="width:44px;height:44px;border-radius:10px;object-fit:cover;background:#1c1c26;flex-shrink:0;">
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.title}</div>
+        <div style="font-size:12px;color:#6b6b7a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.artist}</div>
+      </div>
+      <button class="playlist-add-song-btn ${inPlaylist ? 'added' : ''}">
+        ${inPlaylist ? '✔' : '+'}
+      </button>
+    `;
+    const btn = item.querySelector('.playlist-add-song-btn');
+    btn.onclick = () => {
+      if (pl.songs.includes(s.id)) {
+        pl.songs = pl.songs.filter(id => id !== s.id);
+        btn.textContent = '+';
+        btn.classList.remove('added');
+        showToast(`Dihapus dari "${pl.name}"`);
+      } else {
+        pl.songs.push(s.id);
+        btn.textContent = '✔';
+        btn.classList.add('added');
+        showToast(`Ditambahkan ke "${pl.name}" ✔`);
+      }
+      savePlaylists();
+    };
+    container.appendChild(item);
+  });
+}
+
+document.getElementById('playlistAddBack')?.addEventListener('click', closePlaylistAddPage);
+
+document.getElementById('playlistAddSearch')?.addEventListener('input', (e) => {
+  renderPlaylistAddResults(e.target.value.toLowerCase().trim());
+});
+// ── HARDWARE BACK BUTTON ──────────────────────────────────────
+let backPressedOnce = false;
+let backPressTimer = null;
+
+window.addEventListener('popstate', handleBack);
+
+// Push initial state so popstate fires on back press
+history.pushState({ page: 'app' }, '');
+
+function handleBack(e) {
+  // Always re-push so next back press fires again
+  history.pushState({ page: 'app' }, '');
+
+  // 1. Full player open
+  if (!fullPlayer.classList.contains('hidden')) {
+    fullPlayer.classList.add('hidden');
+    document.body.style.overflow = '';
+    return;
+  }
+
+  // 2. Profile page open
+  const profilePage = document.getElementById('profilePage');
+  if (profilePage && !profilePage.classList.contains('hidden')) {
+    profilePage.classList.add('hidden');
+    return;
+  }
+
+  // 3. Inbox sub pages
+  const inboxSubs = ['inboxFriendPage','inboxSistemPage','inboxAppPage','inboxUpdatePage'];
+  const openInboxSub = inboxSubs.find(id => {
+    const el = document.getElementById(id);
+    return el && !el.classList.contains('hidden');
+  });
+  if (openInboxSub) { closeInboxSubPage(openInboxSub); return; }
+
+  // 4. Playlist add page open
+  const playlistAddPage = document.getElementById('playlistAddPage');
+  if (playlistAddPage && !playlistAddPage.classList.contains('hidden')) {
+    closePlaylistAddPage();
+    return;
+  }
+
+  // 4. Any modal open — close it
+  const openModal = document.querySelector('.modal-overlay:not(.hidden)');
+  if (openModal) {
+    openModal.classList.add('hidden');
+    return;
+  }
+
+  // 5. Sidebar open
+  if (sidebar.classList.contains('open')) {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+    return;
+  }
+
+  // 6. Sidebar pages (pengaturan, kotak masuk, dll) → back to home
+  const activeSidebarPage = sidebarPages.find(name => {
+    const el = document.getElementById(name + 'Page');
+    return el && el.classList.contains('active');
+  });
+  if (activeSidebarPage) {
+    showPage('home');
+    return;
+  }
+
+  // 7. Search or Library → back to home
+  const currentPage = allPages.find(name => {
+    const el = document.getElementById(name + 'Page');
+    return el && el.classList.contains('active');
+  });
+  if (currentPage && currentPage !== 'home') {
+    showPage('home');
+    return;
+  }
+
+  // 8. Already on home → confirm exit
+  if (backPressedOnce) {
+    clearTimeout(backPressTimer);
+    // Let the browser close the app naturally
+    history.go(-2);
+    return;
+  }
+  backPressedOnce = true;
+  showToast('Tekan sekali lagi untuk keluar');
+  backPressTimer = setTimeout(() => { backPressedOnce = false; }, 2000);
+}
+
+// ── INBOX SUB PAGES ───────────────────────────────────────────
+function openInboxSubPage(pageId) {
+  document.getElementById(pageId).classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeInboxSubPage(pageId) {
+  document.getElementById(pageId).classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('inboxFriendBtn')?.addEventListener('click', () => openInboxSubPage('inboxFriendPage'));
+document.getElementById('inboxSistemBtn')?.addEventListener('click', () => openInboxSubPage('inboxSistemPage'));
+document.getElementById('inboxAppBtn')?.addEventListener('click',    () => openInboxSubPage('inboxAppPage'));
+document.getElementById('inboxUpdateBtn')?.addEventListener('click', () => openInboxSubPage('inboxUpdatePage'));
+
+document.getElementById('inboxFriendBack')?.addEventListener('click', () => closeInboxSubPage('inboxFriendPage'));
+document.getElementById('inboxSistemBack')?.addEventListener('click', () => closeInboxSubPage('inboxSistemPage'));
+document.getElementById('inboxAppBack')?.addEventListener('click',    () => closeInboxSubPage('inboxAppPage'));
+document.getElementById('inboxUpdateBack')?.addEventListener('click', () => closeInboxSubPage('inboxUpdatePage'));
