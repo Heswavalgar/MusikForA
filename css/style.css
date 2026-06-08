@@ -2057,6 +2057,18 @@ audio { display: none; }
   opacity: 0.7;
 }
 
+.playlist-add-body,
+#playlistAddResults {
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+#playlistAddResults > div {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 /* ── INBOX PAGE ──────────────────────────────────────────────── */
 .inbox-wrap {
   padding: 16px 0 80px;
@@ -2186,4 +2198,101 @@ audio { display: none; }
   font-size: 11px;
   color: var(--subtext);
   opacity: 0.6;
+}
+
+#guestBtn{
+  background:none;
+  border:none;
+
+  margin-top:16px;
+  width:100%;
+
+  color:var(--primary);
+  font-size:14px;
+  font-weight:600;
+
+  cursor:pointer;
+
+  transition:.25s ease;
+}
+
+#guestBtn:hover{
+  opacity:.8;
+}
+
+#guestBtn:active{
+  transform:scale(.98);
+}
+
+.guest-modal{
+  position:fixed;
+  inset:0;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:rgba(0,0,0,.65);
+  backdrop-filter:blur(6px);
+
+  z-index:9999;
+}
+
+.guest-modal.hidden{
+  display:none;
+}
+
+.guest-modal-box{
+  width:min(90%,340px);
+
+  background:var(--surface);
+
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;
+
+  padding:24px;
+
+  text-align:center;
+}
+
+.guest-modal-box h3{
+  margin-bottom:10px;
+}
+
+.guest-modal-box p{
+  color:var(--subtext);
+  line-height:1.5;
+}
+
+.guest-modal-actions{
+  display:flex;
+  gap:10px;
+  margin-top:20px;
+}
+
+.guest-modal-actions button{
+  flex:1;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+}
+
+#guestStayBtn{
+  background:rgba(255,255,255,.06);
+  color:white;
+}
+
+#guestRegisterBtn{
+  background:var(--primary);
+  color:white;
+}
+
+#playlistAddResults > div {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.playlist-add-song-btn {
+  flex-shrink: 0;
 }
