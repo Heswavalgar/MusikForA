@@ -12,12 +12,14 @@ const db = createClient(
 // ── DOM ───────────────────────────────────────────────────────
 const loginPage   = document.getElementById('loginPage');
 const registerPage= document.getElementById('registerPage');
+const regEmailEl = document.getElementById('regEmail');
 const app         = document.getElementById('app');
 const usernameEl  = document.getElementById('username');
 const passwordEl  = document.getElementById('password');
 const loginBtn    = document.getElementById('loginBtn');
 const goRegisterLink = document.getElementById('goRegisterLink');
 const goLoginLink    = document.getElementById('goLoginLink');
+const guestBtn = document.getElementById('guestBtn');
 
 const regUsernameEl      = document.getElementById('regUsername');
 const regPasswordEl      = document.getElementById('regPassword');
@@ -104,6 +106,10 @@ const fpSwipeContainer = document.getElementById('fpSwipeContainer');
 const fpQueueList = document.getElementById('fpQueueList');
 const fpLyricsContent = document.getElementById('fpLyricsContent');
 
+const guestModal = document.getElementById('guestModal');
+const guestStayBtn = document.getElementById('guestStayBtn');
+const guestRegisterBtn = document.getElementById('guestRegisterBtn');
+
 // ── STATE ─────────────────────────────────────────────────────
 let songs = [];
 let currentIndex = -1;
@@ -149,6 +155,14 @@ function shuffle(arr) {
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
+}
+
+function isGuest() {
+  return localStorage.getItem('mfa_guest') === 'true';
+}
+
+function requireAccount() {
+  guestModal.classList.remove('hidden');
 }
 
 // ── LOADING SPINNER ───────────────────────────────────────────
@@ -319,12 +333,22 @@ document.getElementById('cropCancel')?.addEventListener('click', () => {
 
 // ── PROFILE PAGE ──────────────────────────────────────────────
 function showProfilePage() {
+
+  if (isGuest()) {
+    requireAccount();
+    return;
+  }
+
   sidebar.classList.remove('open');
   overlay.classList.remove('show');
+
   refreshProfileFields();
   updateAvatarUI();
-  if (profilePage) profilePage.classList.remove('hidden');
+
+  if (profilePage)
+    profilePage.classList.remove('hidden');
 }
+
 window.showProfilePage = showProfilePage;
 
 function refreshProfileFields() {
@@ -748,26 +772,83 @@ function showApp() {
   
 }
 
-/*Login*/
+/* Login */
 loginBtn.onclick = async () => {
-  const u = usernameEl.value.trim();
-  const p = passwordEl.value;
-  if (!u || !p) return showToast('Isi username dan password');
+  const email = usernameEl.value.trim();
+  const password = passwordEl.value;
+
+  if (!email || !password)
+    return showToast('Isi email dan password');
+
   showLoader();
-  const { data, error } = await db
-    .from('users')
+
+  const { data, error } =
+    await db.auth.signInWithPassword({
+      email,
+      password
+    });
+
+  if (error) {
+    hideLoader();
+    return showToast('Email atau password salah');
+  }
+
+  const { data: profile } = await db
+    .from('profiles')
     .select('*')
-    .eq('username', u)
-    .eq('password', p)
+    .eq('id', data.user.id)
     .single();
+
   hideLoader();
-  if (!data) return showToast('Username atau password salah');
 
   localStorage.setItem('mfa_loggedin', 'true');
-  localStorage.setItem('mfa_username', data.username);
-  localStorage.setItem('mfa_userid', data.id);
+  localStorage.setItem('mfa_userid', data.user.id);
+
+  if (profile) {
+    localStorage.setItem(
+      'mfa_username',
+      profile.username
+    );
+  }
 
   showToast('Login berhasil 🎵');
+  showApp();
+};
+
+// Logout
+window.logout = async () => {
+
+  try {
+    await db.auth.signOut();
+  } catch (e) {}
+
+  localStorage.clear();
+
+  location.reload();
+};
+
+/* Guest Mode */
+guestBtn.onclick = () => {
+
+  localStorage.setItem('mfa_loggedin', 'true');
+
+  localStorage.setItem(
+    'mfa_username',
+    'Guest'
+  );
+
+  localStorage.setItem(
+    'mfa_userid',
+    'guest'
+  );
+
+  localStorage.setItem(
+    'mfa_guest',
+    'true'
+  );
+
+  showToast('Masuk sebagai tamu 🎵');
+
   showApp();
 };
 
@@ -785,39 +866,72 @@ goLoginLink.onclick = () => {
   loginPage.classList.remove('hidden');
 };
 
-// Daftar
 regSubmitBtn.onclick = async () => {
-  const u = regUsernameEl.value.trim();
-  const p = regPasswordEl.value;
-  const cp = regConfirmPasswordEl.value;
+const username = regUsernameEl.value.trim();
+const email = regEmailEl.value.trim();
+const password = regPasswordEl.value;
+const confirmPassword = regConfirmPasswordEl.value;
 
-  if (!u) return showToast('Username tidak boleh kosong');
-  if (p.length < 8) return showToast('Password minimal 8 karakter');
-  if (p !== cp) return showToast('Konfirmasi password tidak cocok');
+if (!username)
+return showToast('Username tidak boleh kosong');
 
-  // cek username sudah ada
-  showLoader();
-  const { data: existing } = await db
-    .from('users')
-    .select('username')
-    .eq('username', u)
-    .single();
+if (!email)
+return showToast('Email tidak boleh kosong');
 
-  if (existing) { hideLoader(); return showToast('Username sudah digunakan'); }
+if (password.length < 8)
+return showToast('Password minimal 8 karakter');
 
-  const { error } = await db.from('users').insert([{ username: u, password: p }]);
-  if (error) { hideLoader(); return showToast('Gagal mendaftar, coba lagi'); }
+if (password !== confirmPassword)
+return showToast('Konfirmasi password tidak cocok');
 
-  // langsung login dan masuk ke beranda
-  localStorage.setItem('mfa_loggedin', 'true');
-  localStorage.setItem('mfa_username', u);
-  showToast('Pendaftaran berhasil! Selamat datang 🎵');
-  showApp();
-};
+showLoader();
 
-window.logout = () => {
-  localStorage.clear();
-  location.reload();
+// cek username sudah dipakai
+const { data: existing } = await db
+.from('profiles')
+.select('username')
+.eq('username', username)
+.single();
+
+if (existing) {
+hideLoader();
+return showToast('Username sudah digunakan');
+}
+
+// buat akun di Supabase Auth
+const { data, error } = await db.auth.signUp({
+email,
+password
+});
+
+if (error) {
+hideLoader();
+return showToast(error.message);
+}
+
+// simpan profil
+const { error: profileError } = await db
+.from('profiles')
+.insert([
+{
+id: data.user.id,
+username: username
+}
+]);
+
+if (profileError) {
+hideLoader();
+return showToast('Gagal membuat profil');
+}
+
+localStorage.setItem('mfa_loggedin', 'true');
+localStorage.setItem('mfa_username', username);
+localStorage.setItem('mfa_userid', data.user.id);
+
+hideLoader();
+
+showToast('Pendaftaran berhasil! Selamat datang 🎵');
+showApp();
 };
 
 // ── EYE TOGGLE PASSWORD ───────────────────────────────────────
@@ -1379,7 +1493,16 @@ function renderPlaylistAddResults(query) {
   list.forEach(s => {
     const inPlaylist = pl.songs.includes(s.id);
     const item = document.createElement('div');
-    item.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px 20px;cursor:default;';
+    item.style.cssText = `
+display:flex;
+align-items:center;
+gap:12px;
+padding:10px 20px;
+cursor:default;
+width:100%;
+box-sizing:border-box;
+overflow:hidden;
+`;
     item.innerHTML = `
       <img src="${s.cover || ''}" onerror="this.style.display='none'"
         style="width:44px;height:44px;border-radius:10px;object-fit:cover;background:#1c1c26;flex-shrink:0;">
@@ -1522,3 +1645,16 @@ document.getElementById('inboxFriendBack')?.addEventListener('click', () => clos
 document.getElementById('inboxSistemBack')?.addEventListener('click', () => closeInboxSubPage('inboxSistemPage'));
 document.getElementById('inboxAppBack')?.addEventListener('click',    () => closeInboxSubPage('inboxAppPage'));
 document.getElementById('inboxUpdateBack')?.addEventListener('click', () => closeInboxSubPage('inboxUpdatePage'));
+
+guestStayBtn.onclick = () => {
+  guestModal.classList.add('hidden');
+};
+
+guestRegisterBtn.onclick = () => {
+
+  guestModal.classList.add('hidden');
+
+  loginPage.classList.add('hidden');
+  registerPage.classList.remove('hidden');
+
+};
