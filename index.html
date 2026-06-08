@@ -16,10 +16,21 @@
   <div class="login-card">
     <h1>🎵 MusikForAll</h1>
     <p>Semua musik dalam satu tempat</p>
-    <input type="text" id="username" placeholder="Username">
+
+    <input type="email" id="username" placeholder="Email">
+
     <input type="password" id="password" placeholder="Password">
+
     <button id="loginBtn">Masuk</button>
-    <p class="login-register-link">Belum punya akun? <span id="goRegisterLink">Daftar terlebih dulu</span></p>
+
+<p class="login-register-link">
+  Belum punya akun?
+  <span id="goRegisterLink">Daftar terlebih dulu</span>
+</p>
+
+<button id="guestBtn">
+  Masuk sebagai Tamu →
+</button>
   </div>
 </section>
 
@@ -28,17 +39,27 @@
   <div class="login-card">
     <h1>🎵 Daftar Akun</h1>
     <p>Buat akun baru untuk mulai menikmati musik</p>
+
     <input type="text" id="regUsername" placeholder="Username">
+
+    <input type="email" id="regEmail" placeholder="Email">
+
     <div class="pw-wrap">
       <input type="password" id="regPassword" placeholder="Password (min. 8 karakter)">
       <button type="button" class="pw-eye" data-target="regPassword">👁</button>
     </div>
+
     <div class="pw-wrap">
       <input type="password" id="regConfirmPassword" placeholder="Konfirmasi Password">
       <button type="button" class="pw-eye" data-target="regConfirmPassword">👁</button>
     </div>
+
     <button id="regSubmitBtn">Daftar</button>
-    <p class="login-register-link">Sudah punya akun? <span id="goLoginLink">Masuk di sini</span></p>
+
+    <p class="login-register-link">
+      Sudah punya akun?
+      <span id="goLoginLink">Masuk di sini</span>
+    </p>
   </div>
 </section>
 
@@ -652,8 +673,34 @@
   </div>
 </div>
 
+<div id="guestModal" class="guest-modal hidden">
+  <div class="guest-modal-box">
+
+    <h3>🎵 Fitur Khusus Akun</h3>
+
+    <p>
+      Silakan daftar dulu untuk menggunakan fitur ini.
+    </p>
+
+    <div class="guest-modal-actions">
+
+      <button id="guestStayBtn">
+        Tetap di Guest
+      </button>
+
+      <button id="guestRegisterBtn">
+        Daftar
+      </button>
+
+    </div>
+
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/app.js"></script>
+
+
 
 </body>
 </html>
