@@ -74,7 +74,6 @@ const fpProgress   = document.getElementById('fpProgressBar');
 const fpCurrent    = document.getElementById('fpCurrent');
 const fpDuration   = document.getElementById('fpDuration');
 const fpVolume     = document.getElementById('fpVolume');
-const fpFav        = document.getElementById('fpFav');
 const fpShuffle    = document.getElementById('fpShuffle');
 
 const toastEl = document.getElementById('toast');
@@ -114,7 +113,6 @@ const guestRegisterBtn = document.getElementById('guestRegisterBtn');
 let songs = [];
 let currentIndex = -1;
 let isPlaying = false;
-let favorites = [];
 let playHistory = [];
 let userPlaylists = [];
 let shuffleMode = false;
@@ -142,10 +140,6 @@ function formatTime(sec) {
   const m = Math.floor(sec / 60);
   const s = Math.floor(sec % 60).toString().padStart(2, '0');
   return `${m}:${s}`;
-}
-
-function isFavoriteSong(songId) {
-  return favorites.some(f => f.song_id === songId);
 }
 
 function shuffle(arr) {
@@ -521,42 +515,99 @@ if (logoutConfirmBtn) logoutConfirmBtn.onclick = () => {
 };
 
 // ── SWIPE FULL PLAYER ─────────────────────────────────────────
-let swipeStartX = 0;
-let swipeStartY = 0;
-let currentPanel = 1; // 0=queue, 1=main, 2=lyrics
+// ── FULL PLAYER SWIPE PANEL SYSTEM ───────────────────────────
+//
+//  Layout 3 panel horizontal:
+//  [0: Queue] [1: Main] [2: Lyrics]
+//
+//  fpSwipeContainer lebarnya 300vw.
+//  Untuk menampilkan panel index N:
+//    translateX = -(N * 100vw)
+//
+//  index 0 → translateX(0)      → Queue
+//  index 1 → translateX(-100vw) → Main  ← default
+//  index 2 → translateX(-200vw) → Lyrics
 
-function setFpPanel(idx, animate = true) {
-  currentPanel = Math.max(0, Math.min(2, idx));
+let currentPanel = 1; // default: Main Player
+
+/**
+ * Pindah ke panel dengan index tertentu.
+ * @param {number} index  - 0 (Queue), 1 (Main), 2 (Lyrics)
+ * @param {boolean} animate - true = pakai transisi CSS, false = langsung
+ */
+function goToPanel(index, animate = true) {
+  // Clamp: tidak boleh kurang dari 0 atau lebih dari 2
+  currentPanel = Math.max(0, Math.min(2, index));
+
   if (!fpSwipeContainer) return;
-  if (!animate) {
-    // Disable transition, set transform, then re-enable in next frame
-    fpSwipeContainer.style.transition = 'none';
-    fpSwipeContainer.style.transform = `translateX(calc(-${currentPanel} * 100vw))`;
-    requestAnimationFrame(() => {
-      fpSwipeContainer.style.transition = 'transform 0.35s cubic-bezier(0.4,0,0.2,1)';
-    });
+
+  if (animate) {
+    // Aktifkan animasi geser
+    fpSwipeContainer.style.transition = 'transform 0.32s cubic-bezier(0.4, 0, 0.2, 1)';
   } else {
-    fpSwipeContainer.style.transition = 'transform 0.35s cubic-bezier(0.4,0,0.2,1)';
-    fpSwipeContainer.style.transform = `translateX(calc(-${currentPanel} * 100vw))`;
+    // Tanpa animasi — dipakai saat full player baru dibuka
+    fpSwipeContainer.style.transition = 'none';
   }
+
+  // Geser container ke posisi panel yang dituju
+  fpSwipeContainer.style.transform = `translateX(calc(-${currentPanel} * 100vw))`;
+
+  // Render konten panel yang baru aktif (lazy render)
   if (currentPanel === 0) renderQueuePanel();
   if (currentPanel === 2) renderLyricsPanel();
 }
 
+// ── SWIPE GESTURE ────────────────────────────────────────────
+// Deteksi arah swipe horizontal menggunakan touchstart + touchend.
+// touchmove tidak dipakai agar scroll vertikal di dalam panel tetap berfungsi.
+
+let _swipeStartX = 0;
+let _swipeStartY = 0;
+let _swipeActive = false; // true jika gesture sudah dikunci sebagai horizontal
+
 if (fpSwipeContainer) {
+
+  // touchstart: catat posisi awal jari
   fpSwipeContainer.addEventListener('touchstart', (e) => {
-    swipeStartX = e.touches[0].clientX;
-    swipeStartY = e.touches[0].clientY;
+    _swipeStartX = e.touches[0].clientX;
+    _swipeStartY = e.touches[0].clientY;
+    _swipeActive = false;
   }, { passive: true });
 
-  fpSwipeContainer.addEventListener('touchend', (e) => {
-    const dx = e.changedTouches[0].clientX - swipeStartX;
-    const dy = e.changedTouches[0].clientY - swipeStartY;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
-      if (dx < 0) setFpPanel(currentPanel + 1);
-      else setFpPanel(currentPanel - 1);
+  // touchmove: tentukan apakah gesture ini horizontal atau vertikal
+  // Jika horizontal, lock sebagai swipe (cegah scroll vertikal panel)
+  fpSwipeContainer.addEventListener('touchmove', (e) => {
+    const dx = Math.abs(e.touches[0].clientX - _swipeStartX);
+    const dy = Math.abs(e.touches[0].clientY - _swipeStartY);
+
+    if (!_swipeActive && (dx > 5 || dy > 5)) {
+      // Baru bisa dikunci setelah jari bergerak minimal 5px
+      _swipeActive = dx > dy; // horizontal jika dx lebih besar dari dy
     }
   }, { passive: true });
+
+  // touchend: eksekusi perpindahan panel jika gesture horizontal valid
+  fpSwipeContainer.addEventListener('touchend', (e) => {
+    if (!_swipeActive) return; // bukan swipe horizontal, abaikan
+
+    const dx = e.changedTouches[0].clientX - _swipeStartX;
+    const dy = e.changedTouches[0].clientY - _swipeStartY;
+
+    // Pastikan horizontal lebih dominan dari vertikal
+    // dan jarak minimal 40px agar tidak terswiped saat tap
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+      if (dx < 0) {
+        // Swipe kiri → panel berikutnya (index lebih besar)
+        goToPanel(currentPanel + 1);
+      } else {
+        // Swipe kanan → panel sebelumnya (index lebih kecil)
+        goToPanel(currentPanel - 1);
+      }
+    }
+
+    _swipeActive = false;
+  }, { passive: true });
+
 }
 
 // ── QUEUE PANEL ───────────────────────────────────────────────
@@ -591,7 +642,7 @@ function renderQueuePanel() {
     `;
     item.onclick = () => {
       playSong(realIdx !== -1 ? realIdx : currentIndex);
-      setFpPanel(1);
+      goToPanel(1);
     };
     fpQueueList.appendChild(item);
   });
@@ -965,16 +1016,6 @@ async function loadSongs() {
 
   songs = data;
 
-  // load favorites
-  const username = localStorage.getItem('mfa_username');
-  if (username) {
-    const { data: favData } = await db
-      .from('favorites')
-      .select('song_id')
-      .eq('username', username);
-    favorites = favData || [];
-  }
-
   // buat 5 rekomendasi acak
   recommendedSongs = shuffle(songs).slice(0, 5);
 
@@ -1012,13 +1053,12 @@ function renderList(container, list, sourceList, fromSearch, playlistId) {
         <div class="song-title">${s.title}</div>
         <div class="song-artist">${s.artist}</div>
       </div>
-      <button class="song-fav-btn ${isFavoriteSong(s.id) ? 'active' : ''}" data-id="${s.id}" title="Favorit">♥</button>
       ${extraBtn}
       <button class="song-play-btn">▶</button>
     `;
 
     item.onclick = (e) => {
-      if (e.target.closest('.song-fav-btn') || e.target.closest('.song-play-btn') || e.target.closest('.song-add-btn') || e.target.closest('.song-remove-btn')) return;
+      if (e.target.closest('.song-play-btn') || e.target.closest('.song-add-btn') || e.target.closest('.song-remove-btn')) return;
       if (globalIdx !== -1) {
         if (fromSearch) addToSearchHistory(s);
         playSong(globalIdx);
@@ -1030,10 +1070,6 @@ function renderList(container, list, sourceList, fromSearch, playlistId) {
         if (fromSearch) addToSearchHistory(s);
         playSong(globalIdx);
       }
-    };
-    item.querySelector('.song-fav-btn').onclick = async (e) => {
-      e.stopPropagation();
-      await toggleFavoriteSong(s, item.querySelector('.song-fav-btn'));
     };
 
     if (playlistId) {
@@ -1087,14 +1123,8 @@ function playSong(i) {
   fpArtist.textContent = s.artist;
   fpVinylCover.innerHTML = s.cover ? `<img src="${s.cover}">` : '🎧';
 
-  if (isFavoriteSong(s.id)) {
-    fpFav.classList.add('active');
-  } else {
-    fpFav.classList.remove('active');
-  }
-
   // Reset panel ke tengah
-  setFpPanel(1, false);
+  goToPanel(1, false);
 
   // Rebuild shuffle queue saat lagu baru
   if (shuffleMode) buildShuffledQueue();
@@ -1193,7 +1223,7 @@ miniPlayer.onclick = e => {
   if (!e.target.closest('button')) {
     fullPlayer.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
-    setFpPanel(1, false); // center panel (piringan), no animation
+    goToPanel(1, false); // center panel (piringan), no animation
     renderQueuePanel();   // pre-render queue so it's ready
   }
 };
@@ -1201,54 +1231,6 @@ miniPlayer.onclick = e => {
 fpBack.onclick = () => {
   fullPlayer.classList.add('hidden');
   document.body.style.overflow = '';
-};
-
-// ── FAVORITE ─────────────────────────────────────────────────
-async function toggleFavoriteCurrentSong() {
-  if (currentIndex === -1) return;
-  const song = songs[currentIndex];
-  await toggleFavoriteSong(song, fpFav);
-}
-
-async function toggleFavoriteSong(song, btnEl) {
-  const username = localStorage.getItem('mfa_username');
-  if (!song || !song.id) return;
-
-  const exist = favorites.find(f => f.song_id === song.id);
-
-  if (exist) {
-    // Sudah favorit → hapus dari DB
-    const { error } = await db
-      .from('favorites')
-      .delete()
-      .eq('username', username)
-      .eq('song_id', song.id);
-
-    if (!error) {
-      favorites = favorites.filter(f => f.song_id !== song.id);
-      if (btnEl) btnEl.classList.remove('active');
-      if (songs[currentIndex]?.id === song.id) fpFav.classList.remove('active');
-      showToast('Dihapus dari favorit');
-      renderLibrary();
-    }
-  } else {
-    const { error } = await db
-      .from('favorites')
-      .insert([{ username, song_id: song.id }]);
-
-    if (!error) {
-      favorites.push({ song_id: song.id });
-      if (btnEl) btnEl.classList.add('active');
-      if (songs[currentIndex]?.id === song.id) fpFav.classList.add('active');
-      showToast('Ditambahkan ke favorit ♥');
-      renderLibrary();
-    }
-  }
-}
-
-fpFav.onclick = (e) => {
-  e.stopPropagation();
-  toggleFavoriteCurrentSong();
 };
 
 // ── NAV ───────────────────────────────────────────────────────
@@ -1291,10 +1273,8 @@ if (inboxTab) inboxTab.onclick = () => showPage('kotakmasuk');
 // ── ACTIVITY STATS ────────────────────────────────────────────
 function updateActivityStats() {
   const el1 = document.getElementById('statSongsPlayed');
-  const el2 = document.getElementById('statFavCount');
   const el3 = document.getElementById('statPlaylistCount');
   if (el1) el1.textContent = totalSongsPlayed;
-  if (el2) el2.textContent = favorites.length;
   if (el3) el3.textContent = userPlaylists.length;
 }
 
@@ -1343,35 +1323,6 @@ function showDeletePlaylistConfirm(playlistId, playlistName) {
 // ── LIBRARY ───────────────────────────────────────────────────
 function renderLibrary() {
   libraryPage.innerHTML = '';
-
-  // === FAVORIT ===
-  const favSongs = songs.filter(s => isFavoriteSong(s.id));
-
-  const favSection = document.createElement('div');
-  favSection.className = 'library-section';
-  favSection.innerHTML = `
-    <div class="library-playlist-header" id="favPlaylistHeader">
-      <span class="library-playlist-icon">♥</span>
-      <span class="library-playlist-name">Favorit</span>
-      <span class="library-playlist-count">${favSongs.length} lagu</span>
-      <span class="library-chevron">▾</span>
-    </div>
-    <div class="library-playlist-songs" id="favPlaylistSongs" style="display:none"></div>
-  `;
-  libraryPage.appendChild(favSection);
-
-  const favContainer = favSection.querySelector('#favPlaylistSongs');
-  if (favSongs.length === 0) {
-    favContainer.innerHTML = '<p style="color:#6b6b7a;padding:10px 16px;font-size:13px">Belum ada lagu favorit.</p>';
-  } else {
-    renderList(favContainer, favSongs, songs);
-  }
-
-  favSection.querySelector('#favPlaylistHeader').onclick = () => {
-    const open = favContainer.style.display !== 'none';
-    favContainer.style.display = open ? 'none' : 'block';
-    favSection.querySelector('.library-chevron').textContent = open ? '▾' : '▴';
-  };
 
   // === USER PLAYLISTS ===
   userPlaylists.forEach(pl => {
