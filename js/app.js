@@ -1,5 +1,5 @@
 /* ============================================================
-   MusikForAll — app.js
+   MusikForAll — app.js  (FIXED)
    ============================================================ */
 
 // ── SUPABASE ─────────────────────────────────────────────────
@@ -10,21 +10,21 @@ const db = createClient(
 );
 
 // ── DOM ───────────────────────────────────────────────────────
-const loginPage   = document.getElementById('loginPage');
-const registerPage= document.getElementById('registerPage');
-const regEmailEl = document.getElementById('regEmail');
-const app         = document.getElementById('app');
-const usernameEl  = document.getElementById('username');
-const passwordEl  = document.getElementById('password');
-const loginBtn    = document.getElementById('loginBtn');
-const goRegisterLink = document.getElementById('goRegisterLink');
-const goLoginLink    = document.getElementById('goLoginLink');
-const guestBtn = document.getElementById('guestBtn');
+const loginPage    = document.getElementById('loginPage');
+const registerPage = document.getElementById('registerPage');
+const app          = document.getElementById('app');
+const usernameEl   = document.getElementById('username');
+const passwordEl   = document.getElementById('password');
+const loginBtn     = document.getElementById('loginBtn');
+const goRegisterLink  = document.getElementById('goRegisterLink');
+const goLoginLink     = document.getElementById('goLoginLink');
+const guestBtn     = document.getElementById('guestBtn');
 
-const regUsernameEl      = document.getElementById('regUsername');
-const regPasswordEl      = document.getElementById('regPassword');
+const regUsernameEl        = document.getElementById('regUsername');
+const regEmailEl           = document.getElementById('regEmail');
+const regPasswordEl        = document.getElementById('regPassword');
 const regConfirmPasswordEl = document.getElementById('regConfirmPassword');
-const regSubmitBtn       = document.getElementById('regSubmitBtn');
+const regSubmitBtn         = document.getElementById('regSubmitBtn');
 
 const heroTitle  = document.getElementById('heroTitle');
 const heroArtist = document.getElementById('heroArtist');
@@ -32,14 +32,14 @@ const vinylDisc  = document.getElementById('vinylDisc');
 const vinylCover = document.getElementById('vinylCover');
 const albumGrid  = document.getElementById('albumGrid');
 
-const audio        = document.getElementById('audio');
-const miniPlayBtn  = document.getElementById('miniPlayBtn');
-const prevBtn      = document.getElementById('prevBtn');
-const nextBtn      = document.getElementById('nextBtn');
-const miniCover    = document.getElementById('miniCover');
-const currentSong  = document.getElementById('currentSong');
-const currentArtist= document.getElementById('currentArtist');
-const miniPlayer   = document.getElementById('miniPlayer');
+const audio         = document.getElementById('audio');
+const miniPlayBtn   = document.getElementById('miniPlayBtn');
+const prevBtn       = document.getElementById('prevBtn');
+const nextBtn       = document.getElementById('nextBtn');
+const miniCover     = document.getElementById('miniCover');
+const currentSong   = document.getElementById('currentSong');
+const currentArtist = document.getElementById('currentArtist');
+const miniPlayer    = document.getElementById('miniPlayer');
 
 const menuBtn     = document.getElementById('menuBtn');
 const sidebar     = document.getElementById('sidebar');
@@ -54,12 +54,12 @@ const homeTab     = document.getElementById('homeTab');
 const searchTab   = document.getElementById('searchTab');
 const libraryTab  = document.getElementById('libraryTab');
 const inboxTab    = document.getElementById('inboxTab');
-const searchInput = document.getElementById('searchPageInput');
-const searchResults = document.getElementById('searchResults');
+const searchInput         = document.getElementById('searchPageInput');
+const searchResults       = document.getElementById('searchResults');
 const searchHistorySection = document.getElementById('searchHistorySection');
-const searchResultLabel = document.getElementById('searchResultLabel');
-const searchHistoryEl = document.getElementById('searchHistory');
-const homeListLabel = document.getElementById('homeListLabel');
+const searchResultLabel   = document.getElementById('searchResultLabel');
+const searchHistoryEl     = document.getElementById('searchHistory');
+const homeListLabel       = document.getElementById('homeListLabel');
 
 const fullPlayer   = document.getElementById('fullPlayer');
 const fpBack       = document.getElementById('fpBack');
@@ -79,49 +79,48 @@ const fpShuffle    = document.getElementById('fpShuffle');
 const toastEl = document.getElementById('toast');
 
 const addToPlaylistModal = document.getElementById('addToPlaylistModal');
-const modalSongName = document.getElementById('modalSongName');
-const modalPlaylistList = document.getElementById('modalPlaylistList');
-const modalClose = document.getElementById('modalClose');
+const modalSongName      = document.getElementById('modalSongName');
+const modalPlaylistList  = document.getElementById('modalPlaylistList');
+const modalClose         = document.getElementById('modalClose');
 
-// NEW DOM REFS
-const logoutModal = document.getElementById('logoutModal');
-const logoutCancel = document.getElementById('logoutCancel');
+const logoutModal      = document.getElementById('logoutModal');
+const logoutCancel     = document.getElementById('logoutCancel');
 const logoutConfirmBtn = document.getElementById('logoutConfirm');
-const appLoader = document.getElementById('appLoader');
-const profilePage = document.getElementById('profilePage');
-const profileBack = document.getElementById('profileBack');
+const appLoader        = document.getElementById('appLoader');
+const profilePage      = document.getElementById('profilePage');
+const profileBack      = document.getElementById('profileBack');
 const profileUploadBtn = document.getElementById('profileUploadBtn');
-const profilePhotoInput = document.getElementById('profilePhotoInput');
-const profileAvatarImg = document.getElementById('profileAvatarImg');
+const profilePhotoInput  = document.getElementById('profilePhotoInput');
+const profileAvatarImg   = document.getElementById('profileAvatarImg');
 const profileAvatarEmoji = document.getElementById('profileAvatarEmoji');
-const profileAvatarBig = document.getElementById('profileAvatarBig');
-const profileUsernameEl = document.getElementById('profileUsername');
-const sidebarLogoAvatar = document.getElementById('sidebarLogoAvatar');
-const sidebarLogoImg = document.getElementById('sidebarLogoImg');
-const sidebarLogoEmoji = document.getElementById('sidebarLogoEmoji');
-const sidebarAvatarImg = document.getElementById('sidebarAvatarImg');
+const profileAvatarBig   = document.getElementById('profileAvatarBig');
+const profileUsernameEl  = document.getElementById('profileUsername');
+const sidebarLogoAvatar  = document.getElementById('sidebarLogoAvatar');
+const sidebarLogoImg     = document.getElementById('sidebarLogoImg');
+const sidebarLogoEmoji   = document.getElementById('sidebarLogoEmoji');
+const sidebarAvatarImg   = document.getElementById('sidebarAvatarImg');
 const sidebarAvatarEmoji = document.getElementById('sidebarAvatarEmoji');
-const fpSwipeContainer = document.getElementById('fpSwipeContainer');
-const fpQueueList = document.getElementById('fpQueueList');
-const fpLyricsContent = document.getElementById('fpLyricsContent');
+const fpSwipeContainer   = document.getElementById('fpSwipeContainer');
+const fpQueueList        = document.getElementById('fpQueueList');
+const fpLyricsContent    = document.getElementById('fpLyricsContent');
 
-const guestModal = document.getElementById('guestModal');
-const guestStayBtn = document.getElementById('guestStayBtn');
+const guestModal       = document.getElementById('guestModal');
+const guestStayBtn     = document.getElementById('guestStayBtn');
 const guestRegisterBtn = document.getElementById('guestRegisterBtn');
 
 // ── STATE ─────────────────────────────────────────────────────
-let songs = [];
-let currentIndex = -1;
-let isPlaying = false;
-let playHistory = [];
-let userPlaylists = [];
-let shuffleMode = false;
-let shuffledQueue = []; // queue acak untuk shuffle
-let searchHistory = []; // lagu yg diklik saat search
+let songs            = [];
+let currentIndex     = -1;
+let isPlaying        = false;
+let playHistory      = [];
+let userPlaylists    = [];
+let shuffleMode      = false;
+let shuffledQueue    = [];
+let searchHistory    = [];
 let totalSongsPlayed = 0;
-let recommendedSongs = []; // 5 lagu acak
-let modalTargetSong = null;
-let profilePhotoUrl = null; // base64 foto profil
+let recommendedSongs = [];
+let modalTargetSong  = null;
+let profilePhotoUrl  = null;
 
 // ── UTIL ──────────────────────────────────────────────────────
 function showToast(msg, duration = 2500) {
@@ -131,7 +130,7 @@ function showToast(msg, duration = 2500) {
   clearTimeout(toastEl._timer);
   toastEl._timer = setTimeout(() => {
     toastEl.classList.remove('visible');
-    setTimeout(() => toastEl.style.display = 'none', 300);
+    setTimeout(() => { toastEl.style.display = 'none'; }, 300);
   }, duration);
 }
 
@@ -163,11 +162,27 @@ function requireAccount() {
 function showLoader() {
   if (appLoader) appLoader.classList.add('visible');
 }
+
 function hideLoader() {
   if (appLoader) {
     appLoader.classList.remove('visible');
-    setTimeout(() => appLoader.style.display = 'none', 400);
+    setTimeout(() => { appLoader.style.display = 'none'; }, 400);
   }
+}
+
+// ── OVERFLOW BODY MANAGER ────────────────────────────────────
+// [FIX C2] Reference-counted body overflow lock agar scroll
+// tidak terkunci permanen saat beberapa layer dibuka/tutup.
+let _overflowLockCount = 0;
+
+function lockBodyScroll() {
+  _overflowLockCount++;
+  document.body.style.overflow = 'hidden';
+}
+
+function unlockBodyScroll() {
+  _overflowLockCount = Math.max(0, _overflowLockCount - 1);
+  if (_overflowLockCount === 0) document.body.style.overflow = '';
 }
 
 // ── PROFILE PHOTO ─────────────────────────────────────────────
@@ -193,38 +208,38 @@ function deleteProfilePhoto() {
   updateAvatarUI();
 }
 
+// [REFACTOR F4] Helper agar updateAvatarUI lebih ringkas
+function setAvatarEl(imgEl, emojiEl, hasPhoto, src) {
+  if (imgEl) { imgEl.src = hasPhoto ? src : ''; imgEl.style.display = hasPhoto ? 'block' : 'none'; }
+  if (emojiEl) emojiEl.style.display = hasPhoto ? 'none' : '';
+}
+
 function updateAvatarUI() {
-  const hasPhoto = !!profilePhotoUrl;
-  // sidebar avatar
-  if (sidebarAvatarImg) { sidebarAvatarImg.src = hasPhoto ? profilePhotoUrl : ''; sidebarAvatarImg.style.display = hasPhoto ? 'block' : 'none'; }
-  if (sidebarAvatarEmoji) sidebarAvatarEmoji.style.display = hasPhoto ? 'none' : '';
-  // logo sidebar
-  if (sidebarLogoImg) { sidebarLogoImg.src = hasPhoto ? profilePhotoUrl : ''; sidebarLogoImg.style.display = hasPhoto ? 'block' : 'none'; }
-  if (sidebarLogoEmoji) sidebarLogoEmoji.style.display = hasPhoto ? 'none' : '';
-  // profile page avatar
-  if (profileAvatarImg) { profileAvatarImg.src = hasPhoto ? profilePhotoUrl : ''; profileAvatarImg.style.display = hasPhoto ? 'block' : 'none'; }
-  if (profileAvatarEmoji) profileAvatarEmoji.style.display = hasPhoto ? 'none' : '';
-  // delete btn
+  const has = !!profilePhotoUrl;
+  const src = profilePhotoUrl || '';
+  setAvatarEl(sidebarAvatarImg, sidebarAvatarEmoji, has, src);
+  setAvatarEl(sidebarLogoImg, sidebarLogoEmoji, has, src);
+  setAvatarEl(profileAvatarImg, profileAvatarEmoji, has, src);
+
   const delBtn = document.getElementById('profileDeleteBtn');
-  if (delBtn) delBtn.classList.toggle('hidden', !hasPhoto);
-  // top bar menu btn
+  if (delBtn) delBtn.classList.toggle('hidden', !has);
+
   const topLogo = document.getElementById('menuBtn');
   if (topLogo) {
-    if (hasPhoto) {
-      topLogo.innerHTML = `<img src="${profilePhotoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">`;
-    } else {
-      topLogo.textContent = '🎵';
-    }
+    topLogo.innerHTML = has
+      ? `<img src="${src}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">`
+      : '🎵';
   }
 }
 
 // ── CROP / FIT FOTO ────────────────────────────────────────────
+// [FIX P5] Rename variable lokal agar tidak shadow overlay global
 let cropState = { img: null, x: 0, y: 0, scale: 1, startX: 0, startY: 0, dragging: false, lastDist: 0 };
 
 function openCropOverlay(file) {
-  const overlay = document.getElementById('profileAvatarOverlay');
+  const cropOverlay = document.getElementById('profileAvatarOverlay'); // [FIX P5] renamed
   const canvas = document.getElementById('cropCanvas');
-  if (!overlay || !canvas) return;
+  if (!cropOverlay || !canvas) return;
 
   const size = Math.min(window.innerWidth - 48, 280);
   canvas.width = size; canvas.height = size;
@@ -234,7 +249,6 @@ function openCropOverlay(file) {
     const img = new Image();
     img.onload = () => {
       cropState.img = img;
-      // scale agar gambar memenuhi canvas
       const scale = Math.max(size / img.width, size / img.height);
       cropState.scale = scale;
       cropState.x = (size - img.width * scale) / 2;
@@ -245,9 +259,8 @@ function openCropOverlay(file) {
   };
   reader.readAsDataURL(file);
 
-  overlay.style.display = 'flex';
+  cropOverlay.style.display = 'flex';
 
-  // Touch events
   canvas.ontouchstart = (e) => {
     e.preventDefault();
     if (e.touches.length === 1) {
@@ -280,10 +293,9 @@ function openCropOverlay(file) {
   };
   canvas.ontouchend = () => { cropState.dragging = false; };
 
-  // Mouse (desktop)
   canvas.onmousedown = (e) => { cropState.dragging = true; cropState.startX = e.clientX - cropState.x; cropState.startY = e.clientY - cropState.y; };
   canvas.onmousemove = (e) => { if (!cropState.dragging) return; cropState.x = e.clientX - cropState.startX; cropState.y = e.clientY - cropState.startY; drawCrop(); };
-  canvas.onmouseup = () => cropState.dragging = false;
+  canvas.onmouseup = () => { cropState.dragging = false; };
   canvas.onwheel = (e) => { e.preventDefault(); cropState.scale *= e.deltaY < 0 ? 1.1 : 0.9; drawCrop(); };
 }
 
@@ -293,10 +305,9 @@ function drawCrop() {
   const ctx = canvas.getContext('2d');
   const s = canvas.width;
   ctx.clearRect(0, 0, s, s);
-  // clip circle
   ctx.save();
   ctx.beginPath();
-  ctx.arc(s/2, s/2, s/2, 0, Math.PI*2);
+  ctx.arc(s / 2, s / 2, s / 2, 0, Math.PI * 2);
   ctx.clip();
   ctx.drawImage(cropState.img, cropState.x, cropState.y, cropState.img.width * cropState.scale, cropState.img.height * cropState.scale);
   ctx.restore();
@@ -305,12 +316,11 @@ function drawCrop() {
 function confirmCrop() {
   const canvas = document.getElementById('cropCanvas');
   if (!canvas) return;
-  // output 300x300
   const out = document.createElement('canvas');
   out.width = 300; out.height = 300;
   const ctx = out.getContext('2d');
   ctx.beginPath();
-  ctx.arc(150, 150, 150, 0, Math.PI*2);
+  ctx.arc(150, 150, 150, 0, Math.PI * 2);
   ctx.clip();
   const ratio = 300 / canvas.width;
   ctx.drawImage(cropState.img, cropState.x * ratio, cropState.y * ratio, cropState.img.width * cropState.scale * ratio, cropState.img.height * cropState.scale * ratio);
@@ -327,37 +337,27 @@ document.getElementById('cropCancel')?.addEventListener('click', () => {
 
 // ── PROFILE PAGE ──────────────────────────────────────────────
 function showProfilePage() {
-
-  if (isGuest()) {
-    requireAccount();
-    return;
-  }
-
+  if (isGuest()) { requireAccount(); return; }
   sidebar.classList.remove('open');
   overlay.classList.remove('show');
-
   refreshProfileFields();
   updateAvatarUI();
-
-  if (profilePage)
-    profilePage.classList.remove('hidden');
+  if (profilePage) profilePage.classList.remove('hidden');
 }
-
 window.showProfilePage = showProfilePage;
 
 function refreshProfileFields() {
   const username = localStorage.getItem('mfa_username') || '-';
   if (profileUsernameEl) profileUsernameEl.textContent = '@' + username;
-  const bio = localStorage.getItem(`mfa_bio_${username}`) || '';
+  const bio   = localStorage.getItem(`mfa_bio_${username}`) || '';
   const phone = localStorage.getItem(`mfa_phone_${username}`) || '';
-  const el = document.getElementById('profileBio');
-  const el2 = document.getElementById('profilePhone');
-  if (el) { el.textContent = bio || 'Belum ada bio'; el.classList.toggle('muted', !bio); }
-  if (el2) { el2.textContent = phone || 'Belum diisi'; el2.classList.toggle('muted', !phone); }
+  const bioEl   = document.getElementById('profileBio');
+  const phoneEl = document.getElementById('profilePhone');
+  if (bioEl)   { bioEl.textContent   = bio   || 'Belum ada bio'; bioEl.classList.toggle('muted', !bio); }
+  if (phoneEl) { phoneEl.textContent = phone || 'Belum diisi';   phoneEl.classList.toggle('muted', !phone); }
 }
 
 if (profileBack) profileBack.onclick = () => profilePage.classList.add('hidden');
-
 if (profileUploadBtn) profileUploadBtn.onclick = () => profilePhotoInput.click();
 
 const profileDeleteBtn = document.getElementById('profileDeleteBtn');
@@ -391,12 +391,12 @@ if (profileShareBtn) {
 }
 
 // ── EDIT FIELD MODAL ──────────────────────────────────────────
-const profileEditModal = document.getElementById('profileEditModal');
-const profileEditInput = document.getElementById('profileEditInput');
-const profileEditTitle = document.getElementById('profileEditTitle');
-const profileEditNote  = document.getElementById('profileEditNote');
-const profileEditSave  = document.getElementById('profileEditSave');
-const profileEditCancel= document.getElementById('profileEditCancel');
+const profileEditModal  = document.getElementById('profileEditModal');
+const profileEditInput  = document.getElementById('profileEditInput');
+const profileEditTitle  = document.getElementById('profileEditTitle');
+const profileEditNote   = document.getElementById('profileEditNote');
+const profileEditSave   = document.getElementById('profileEditSave');
+const profileEditCancel = document.getElementById('profileEditCancel');
 let currentEditField = null;
 
 document.querySelectorAll('.profile-field-edit').forEach(btn => {
@@ -410,12 +410,12 @@ function openEditField(field) {
   const notes  = { username: 'Mengganti username akan memperbarui akun di database.', bio: '', phone: '' };
   const vals   = {
     username,
-    bio: localStorage.getItem(`mfa_bio_${username}`) || '',
+    bio:   localStorage.getItem(`mfa_bio_${username}`)   || '',
     phone: localStorage.getItem(`mfa_phone_${username}`) || '',
   };
-  profileEditTitle.textContent = titles[field] || 'Edit';
-  profileEditInput.value = vals[field] || '';
-  profileEditInput.placeholder = titles[field] || '';
+  profileEditTitle.textContent     = titles[field] || 'Edit';
+  profileEditInput.value           = vals[field]   || '';
+  profileEditInput.placeholder     = titles[field] || '';
   if (notes[field]) { profileEditNote.textContent = notes[field]; profileEditNote.style.display = ''; }
   else profileEditNote.style.display = 'none';
   profileEditModal.classList.remove('hidden');
@@ -426,39 +426,41 @@ if (profileEditCancel) profileEditCancel.onclick = () => profileEditModal.classL
 
 if (profileEditSave) {
   profileEditSave.onclick = async () => {
-    const val = profileEditInput.value.trim();
+    const val      = profileEditInput.value.trim();
     const username = localStorage.getItem('mfa_username') || '';
     if (!val) return showToast('Tidak boleh kosong');
+
     if (currentEditField === 'username') {
-      // cek di DB
-      const { data: existing } = await db.from('users').select('username').eq('username', val).single();
+      // [FIX P4] Gunakan tabel 'profiles' konsisten (bukan 'users')
+      const { data: existing } = await db.from('profiles').select('username').eq('username', val).single();
       if (existing && val !== username) return showToast('Username sudah dipakai');
-      const { error } = await db.from('users').update({ username: val }).eq('username', username);
+      const { error } = await db.from('profiles').update({ username: val }).eq('username', username);
       if (error) return showToast('Gagal update username');
-      // update DB favorites & dll juga pakai username lama — perlu update localStorage
       localStorage.setItem('mfa_username', val);
-      // pindahkan photo & bio ke key baru
-      const photo = localStorage.getItem(`mfa_photo_${username}`);
-      const bio   = localStorage.getItem(`mfa_bio_${username}`);
-      const phone = localStorage.getItem(`mfa_phone_${username}`);
-      if (photo)  { localStorage.setItem(`mfa_photo_${val}`, photo);  localStorage.removeItem(`mfa_photo_${username}`); }
-      if (bio)    { localStorage.setItem(`mfa_bio_${val}`, bio);      localStorage.removeItem(`mfa_bio_${username}`); }
-      if (phone)  { localStorage.setItem(`mfa_phone_${val}`, phone);  localStorage.removeItem(`mfa_phone_${username}`); }
+      // pindahkan data lokal ke key baru
+      ['mfa_photo_', 'mfa_bio_', 'mfa_phone_'].forEach(prefix => {
+        const old = localStorage.getItem(prefix + username);
+        if (old) { localStorage.setItem(prefix + val, old); localStorage.removeItem(prefix + username); }
+      });
       if (sidebarUser) sidebarUser.textContent = '@' + val;
       showToast('Username diperbarui ✔');
+
     } else if (currentEditField === 'bio') {
       localStorage.setItem(`mfa_bio_${username}`, val);
       showToast('Bio diperbarui ✔');
+
     } else if (currentEditField === 'phone') {
       localStorage.setItem(`mfa_phone_${username}`, val);
       showToast('Info kontak diperbarui ✔');
     }
+
     profileEditModal.classList.add('hidden');
     refreshProfileFields();
   };
 }
 
 // ── GANTI SANDI ───────────────────────────────────────────────
+// [FIX BUG #2] Gunakan Supabase Auth updateUser, bukan tabel plaintext
 const changePasswordModal = document.getElementById('changePasswordModal');
 const changePasswordBtn   = document.getElementById('changePasswordBtn');
 const cpCancel = document.getElementById('cpCancel');
@@ -472,25 +474,39 @@ if (cpSave) {
     const oldPw = document.getElementById('cpOldPw').value;
     const newPw = document.getElementById('cpNewPw').value;
     const conPw = document.getElementById('cpConfirmPw').value;
-    const username = localStorage.getItem('mfa_username');
+    const email = localStorage.getItem('mfa_email') || '';
+
     if (!oldPw || !newPw || !conPw) return showToast('Isi semua kolom');
     if (newPw.length < 8) return showToast('Sandi baru min. 8 karakter');
     if (newPw !== conPw) return showToast('Konfirmasi sandi tidak cocok');
-    // cek sandi lama
-    const { data } = await db.from('users').select('password').eq('username', username).single();
-    if (!data || data.password !== oldPw) return showToast('Sandi lama salah');
-    const { error } = await db.from('users').update({ password: newPw }).eq('username', username);
+
+    showLoader();
+
+    // Verifikasi sandi lama via Supabase Auth (bukan tabel plaintext)
+    const { error: signInError } = await db.auth.signInWithPassword({ email, password: oldPw });
+    if (signInError) {
+      hideLoader();
+      return showToast('Sandi lama salah');
+    }
+
+    // Update sandi via Supabase Auth
+    const { error } = await db.auth.updateUser({ password: newPw });
+    hideLoader();
+
     if (error) return showToast('Gagal ganti sandi');
+
     changePasswordModal.classList.add('hidden');
-    document.getElementById('cpOldPw').value = '';
-    document.getElementById('cpNewPw').value = '';
+    document.getElementById('cpOldPw').value    = '';
+    document.getElementById('cpNewPw').value    = '';
     document.getElementById('cpConfirmPw').value = '';
     showToast('Sandi berhasil diperbarui ✔');
   };
 }
 
-// Eye toggle untuk modal ganti sandi
-document.querySelectorAll('#changePasswordModal .pw-eye').forEach(btn => {
+// [FIX D1] Eye toggle — satu querySelectorAll untuk semua .pw-eye,
+// tidak di-register dua kali. Listener di #changePasswordModal
+// sudah tercakup di sini karena selector lebih luas.
+document.querySelectorAll('.pw-eye').forEach(btn => {
   btn.addEventListener('click', () => {
     const inp = document.getElementById(btn.dataset.target);
     if (!inp) return;
@@ -499,7 +515,20 @@ document.querySelectorAll('#changePasswordModal .pw-eye').forEach(btn => {
   });
 });
 
-// ── LOGOUT CONFIRM ────────────────────────────────────────────
+// ── LOGOUT ───────────────────────────────────────────────────
+// [FIX BUG #3] Satu fungsi logout yang memanggil db.auth.signOut()
+// dan membersihkan localStorage dengan benar (tidak hapus foto/playlist)
+async function performLogout() {
+  try { await db.auth.signOut(); } catch (e) { /* abaikan error logout */ }
+  // Hapus hanya auth keys, bukan data user seperti foto & playlist
+  localStorage.removeItem('mfa_loggedin');
+  localStorage.removeItem('mfa_username');
+  localStorage.removeItem('mfa_userid');
+  localStorage.removeItem('mfa_email');
+  localStorage.removeItem('mfa_guest');
+  location.reload();
+}
+
 function showLogoutConfirm() {
   sidebar.classList.remove('open');
   overlay.classList.remove('show');
@@ -507,107 +536,54 @@ function showLogoutConfirm() {
 }
 window.showLogoutConfirm = showLogoutConfirm;
 
-if (logoutCancel) logoutCancel.onclick = () => logoutModal.classList.add('hidden');
-if (logoutConfirmBtn) logoutConfirmBtn.onclick = () => {
-  localStorage.removeItem('mfa_loggedin');
-  localStorage.removeItem('mfa_username');
-  location.reload();
-};
+if (logoutCancel)     logoutCancel.onclick     = () => logoutModal.classList.add('hidden');
+if (logoutConfirmBtn) logoutConfirmBtn.onclick = () => performLogout();
 
 // ── SWIPE FULL PLAYER ─────────────────────────────────────────
-// ── FULL PLAYER SWIPE PANEL SYSTEM ───────────────────────────
-//
-//  Layout 3 panel horizontal:
-//  [0: Queue] [1: Main] [2: Lyrics]
-//
-//  fpSwipeContainer lebarnya 300vw.
-//  Untuk menampilkan panel index N:
-//    translateX = -(N * 100vw)
-//
-//  index 0 → translateX(0)      → Queue
-//  index 1 → translateX(-100vw) → Main  ← default
-//  index 2 → translateX(-200vw) → Lyrics
+//  Layout 3 panel horizontal: [0: Queue] [1: Main] [2: Lyrics]
 
-let currentPanel = 1; // default: Main Player
+let currentPanel = 1;
 
-/**
- * Pindah ke panel dengan index tertentu.
- * @param {number} index  - 0 (Queue), 1 (Main), 2 (Lyrics)
- * @param {boolean} animate - true = pakai transisi CSS, false = langsung
- */
 function goToPanel(index, animate = true) {
-  // Clamp: tidak boleh kurang dari 0 atau lebih dari 2
   currentPanel = Math.max(0, Math.min(2, index));
-
   if (!fpSwipeContainer) return;
-
-  if (animate) {
-    // Aktifkan animasi geser
-    fpSwipeContainer.style.transition = 'transform 0.32s cubic-bezier(0.4, 0, 0.2, 1)';
-  } else {
-    // Tanpa animasi — dipakai saat full player baru dibuka
-    fpSwipeContainer.style.transition = 'none';
-  }
-
-  // Geser container ke posisi panel yang dituju
+  fpSwipeContainer.style.transition = animate
+    ? 'transform 0.32s cubic-bezier(0.4, 0, 0.2, 1)'
+    : 'none';
   fpSwipeContainer.style.transform = `translateX(calc(-${currentPanel} * 100vw))`;
-
-  // Render konten panel yang baru aktif (lazy render)
   if (currentPanel === 0) renderQueuePanel();
   if (currentPanel === 2) renderLyricsPanel();
 }
 
 // ── SWIPE GESTURE ────────────────────────────────────────────
-// Deteksi arah swipe horizontal menggunakan touchstart + touchend.
-// touchmove tidak dipakai agar scroll vertikal di dalam panel tetap berfungsi.
-
 let _swipeStartX = 0;
 let _swipeStartY = 0;
-let _swipeActive = false; // true jika gesture sudah dikunci sebagai horizontal
+let _swipeActive = false;
 
 if (fpSwipeContainer) {
-
-  // touchstart: catat posisi awal jari
   fpSwipeContainer.addEventListener('touchstart', (e) => {
     _swipeStartX = e.touches[0].clientX;
     _swipeStartY = e.touches[0].clientY;
     _swipeActive = false;
   }, { passive: true });
 
-  // touchmove: tentukan apakah gesture ini horizontal atau vertikal
-  // Jika horizontal, lock sebagai swipe (cegah scroll vertikal panel)
   fpSwipeContainer.addEventListener('touchmove', (e) => {
     const dx = Math.abs(e.touches[0].clientX - _swipeStartX);
     const dy = Math.abs(e.touches[0].clientY - _swipeStartY);
-
     if (!_swipeActive && (dx > 5 || dy > 5)) {
-      // Baru bisa dikunci setelah jari bergerak minimal 5px
-      _swipeActive = dx > dy; // horizontal jika dx lebih besar dari dy
+      _swipeActive = dx > dy;
     }
   }, { passive: true });
 
-  // touchend: eksekusi perpindahan panel jika gesture horizontal valid
   fpSwipeContainer.addEventListener('touchend', (e) => {
-    if (!_swipeActive) return; // bukan swipe horizontal, abaikan
-
+    if (!_swipeActive) return;
     const dx = e.changedTouches[0].clientX - _swipeStartX;
     const dy = e.changedTouches[0].clientY - _swipeStartY;
-
-    // Pastikan horizontal lebih dominan dari vertikal
-    // dan jarak minimal 40px agar tidak terswiped saat tap
     if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
-      if (dx < 0) {
-        // Swipe kiri → panel berikutnya (index lebih besar)
-        goToPanel(currentPanel + 1);
-      } else {
-        // Swipe kanan → panel sebelumnya (index lebih kecil)
-        goToPanel(currentPanel - 1);
-      }
+      goToPanel(dx < 0 ? currentPanel + 1 : currentPanel - 1);
     }
-
     _swipeActive = false;
   }, { passive: true });
-
 }
 
 // ── QUEUE PANEL ───────────────────────────────────────────────
@@ -626,7 +602,7 @@ function renderQueuePanel() {
     return;
   }
   queue.forEach((s, idx) => {
-    const realIdx = shuffleMode ? idx : songs.findIndex(gs => gs.id === s.id);
+    const realIdx = shuffleMode ? songs.findIndex(gs => gs.id === s.id) : idx;
     const isActive = shuffleMode
       ? (s.id === songs[currentIndex]?.id)
       : (realIdx === currentIndex);
@@ -666,29 +642,21 @@ async function renderLyricsPanel() {
     if (error || !data?.content) {
       fpLyricsContent.innerHTML = '<p class="fp-lyrics-empty">Tidak ada lirik tersedia</p>';
     } else {
-      const lines = data.content.split('\n').map(l => `<div class="fp-lyric-line">${l || '&nbsp;'}</div>`).join('');
+      const lines = data.content.split('\n')
+        .map(l => `<div class="fp-lyric-line">${l || '&nbsp;'}</div>`)
+        .join('');
       fpLyricsContent.innerHTML = lines;
     }
-  } catch(e) {
+  } catch (e) {
     fpLyricsContent.innerHTML = '<p class="fp-lyrics-empty">Tidak ada lirik tersedia</p>';
   }
 }
 
-// ── SEARCH HISTORY RENDER with cover ──────────────────────────
-
+// ── HISTORY ───────────────────────────────────────────────────
 function loadHistory() {
-  const saved = localStorage.getItem('mfa_history');
-  if (saved) {
-    try { playHistory = JSON.parse(saved); } catch(e) { playHistory = []; }
-  }
-  const saved2 = localStorage.getItem('mfa_search_history');
-  if (saved2) {
-    try { searchHistory = JSON.parse(saved2); } catch(e) { searchHistory = []; }
-  }
-  const saved3 = localStorage.getItem('mfa_songs_played');
-  if (saved3) {
-    try { totalSongsPlayed = parseInt(saved3) || 0; } catch(e) { totalSongsPlayed = 0; }
-  }
+  try { playHistory = JSON.parse(localStorage.getItem('mfa_history') || '[]'); } catch (e) { playHistory = []; }
+  try { searchHistory = JSON.parse(localStorage.getItem('mfa_search_history') || '[]'); } catch (e) { searchHistory = []; }
+  try { totalSongsPlayed = parseInt(localStorage.getItem('mfa_songs_played') || '0') || 0; } catch (e) { totalSongsPlayed = 0; }
 }
 
 function saveHistory() {
@@ -700,7 +668,6 @@ function addToHistory(song) {
   playHistory.unshift(song);
   if (playHistory.length > 5) playHistory = playHistory.slice(0, 5);
   saveHistory();
-  // update home only if home is active
   if (homePage.classList.contains('active')) renderHome();
 }
 
@@ -730,9 +697,7 @@ function renderSearchHistory() {
           <div class="search-history-artist">${s.artist}</div>
         </div>
       `;
-      item.onclick = () => {
-        if (globalIdx !== -1) playSong(globalIdx);
-      };
+      item.onclick = () => { if (globalIdx !== -1) playSong(globalIdx); };
       searchHistoryEl.appendChild(item);
     });
   } else {
@@ -742,10 +707,7 @@ function renderSearchHistory() {
 
 // ── PLAYLISTS ─────────────────────────────────────────────────
 function loadPlaylists() {
-  const saved = localStorage.getItem('mfa_playlists');
-  if (saved) {
-    try { userPlaylists = JSON.parse(saved); } catch(e) { userPlaylists = []; }
-  }
+  try { userPlaylists = JSON.parse(localStorage.getItem('mfa_playlists') || '[]'); } catch (e) { userPlaylists = []; }
 }
 
 function savePlaylists() {
@@ -779,7 +741,7 @@ function renderModalPlaylists() {
     item.className = `modal-playlist-item${inList ? ' in-playlist' : ''}`;
     item.innerHTML = `<span>${inList ? '✔' : '🎵'}</span> ${pl.name} <span style="margin-left:auto;font-size:12px;color:#6b6b7a">${pl.songs.length} lagu</span>`;
     item.onclick = () => {
-      if (!modalTargetSong || !modalTargetSong.id) return;
+      if (!modalTargetSong?.id) return;
       if (inList) {
         pl.songs = pl.songs.filter(id => id !== modalTargetSong.id);
         showToast(`Dihapus dari "${pl.name}"`);
@@ -811,7 +773,6 @@ function showApp() {
   loginPage.classList.add('hidden');
   registerPage.classList.add('hidden');
   app.classList.remove('hidden');
- 
 
   const user = localStorage.getItem('mfa_username');
   if (user) sidebarUser.textContent = '@' + user;
@@ -819,25 +780,19 @@ function showApp() {
   loadHistory();
   loadPlaylists();
   loadProfilePhoto();
-  loadSongs();
-  
+  loadSongs(); // [NOTE BUG #4] async, dipanggil fire-and-forget secara sengaja agar UI tidak block
 }
 
-/* Login */
+/* ─── LOGIN ──────────────────────────────────────────────────── */
 loginBtn.onclick = async () => {
-  const email = usernameEl.value.trim();
+  const email    = usernameEl.value.trim();
   const password = passwordEl.value;
 
-  if (!email || !password)
-    return showToast('Isi email dan password');
+  if (!email || !password) return showToast('Isi email dan password');
 
   showLoader();
 
-  const { data, error } =
-    await db.auth.signInWithPassword({
-      email,
-      password
-    });
+  const { data, error } = await db.auth.signInWithPassword({ email, password });
 
   if (error) {
     hideLoader();
@@ -854,56 +809,99 @@ loginBtn.onclick = async () => {
 
   localStorage.setItem('mfa_loggedin', 'true');
   localStorage.setItem('mfa_userid', data.user.id);
+  localStorage.setItem('mfa_email', email);
+  localStorage.removeItem('mfa_guest'); // pastikan flag guest dihapus
 
   if (profile) {
-    localStorage.setItem(
-      'mfa_username',
-      profile.username
-    );
+    localStorage.setItem('mfa_username', profile.username);
   }
 
   showToast('Login berhasil 🎵');
   showApp();
 };
 
-// Logout
-window.logout = async () => {
+/* ─── REGISTER ───────────────────────────────────────────────── */
+// [FIX BUG #1] Handle kasus data.user null (email confirmation aktif)
+regSubmitBtn.onclick = async () => {
+  const username        = regUsernameEl.value.trim();
+  const email           = regEmailEl.value.trim();
+  const password        = regPasswordEl.value;
+  const confirmPassword = regConfirmPasswordEl.value;
 
-  try {
-    await db.auth.signOut();
-  } catch (e) {}
+  if (!username)              return showToast('Username tidak boleh kosong');
+  if (!email)                 return showToast('Email tidak boleh kosong');
+  if (password.length < 8)   return showToast('Password minimal 8 karakter');
+  if (password !== confirmPassword) return showToast('Konfirmasi password tidak cocok');
 
-  localStorage.clear();
+  showLoader();
 
-  location.reload();
-};
+  // Cek username sudah dipakai — handle error .single() dengan benar
+  const { data: existing, error: checkError } = await db
+    .from('profiles')
+    .select('username')
+    .eq('username', username)
+    .maybeSingle(); // [FIX P1] maybeSingle() tidak throw jika tidak ada data
 
-/* Guest Mode */
-guestBtn.onclick = () => {
+  if (checkError) {
+    hideLoader();
+    return showToast('Gagal memeriksa username');
+  }
+
+  if (existing) {
+    hideLoader();
+    return showToast('Username sudah digunakan');
+  }
+
+  // Buat akun di Supabase Auth
+  const { data, error } = await db.auth.signUp({ email, password });
+
+  if (error) {
+    hideLoader();
+    return showToast(error.message);
+  }
+
+  // [FIX BUG #1] Cek apakah user null (email confirmation belum dilakukan)
+  if (!data.user) {
+    hideLoader();
+    showToast('Pendaftaran berhasil! Cek email untuk konfirmasi akun 📧');
+    // Kembali ke login page agar user bisa login setelah konfirmasi
+    registerPage.classList.add('hidden');
+    loginPage.classList.remove('hidden');
+    return;
+  }
+
+  // User langsung aktif (email confirmation dimatikan di Supabase)
+  const { error: profileError } = await db
+    .from('profiles')
+    .insert([{ id: data.user.id, username }]);
+
+  if (profileError) {
+    hideLoader();
+    return showToast('Gagal membuat profil');
+  }
 
   localStorage.setItem('mfa_loggedin', 'true');
+  localStorage.setItem('mfa_username', username);
+  localStorage.setItem('mfa_userid', data.user.id);
+  localStorage.setItem('mfa_email', email);
+  localStorage.removeItem('mfa_guest'); // pastikan flag guest dihapus
 
-  localStorage.setItem(
-    'mfa_username',
-    'Guest'
-  );
-
-  localStorage.setItem(
-    'mfa_userid',
-    'guest'
-  );
-
-  localStorage.setItem(
-    'mfa_guest',
-    'true'
-  );
-
-  showToast('Masuk sebagai tamu 🎵');
-
+  hideLoader();
+  showToast('Pendaftaran berhasil! Selamat datang 🎵');
   showApp();
 };
 
-// Navigasi ke halaman daftar
+/* ─── GUEST MODE ─────────────────────────────────────────────── */
+guestBtn.onclick = () => {
+  localStorage.setItem('mfa_loggedin', 'true');
+  localStorage.setItem('mfa_username', 'Guest');
+  localStorage.setItem('mfa_userid', 'guest');
+  localStorage.setItem('mfa_guest', 'true');
+  showToast('Masuk sebagai tamu 🎵');
+  showApp();
+};
+
+/* ─── NAVIGASI LOGIN ↔ REGISTER ──────────────────────────────── */
 goRegisterLink.onclick = () => {
   loginPage.classList.add('hidden');
   registerPage.classList.remove('hidden');
@@ -917,86 +915,31 @@ goLoginLink.onclick = () => {
   loginPage.classList.remove('hidden');
 };
 
-regSubmitBtn.onclick = async () => {
-const username = regUsernameEl.value.trim();
-const email = regEmailEl.value.trim();
-const password = regPasswordEl.value;
-const confirmPassword = regConfirmPasswordEl.value;
-
-if (!username)
-return showToast('Username tidak boleh kosong');
-
-if (!email)
-return showToast('Email tidak boleh kosong');
-
-if (password.length < 8)
-return showToast('Password minimal 8 karakter');
-
-if (password !== confirmPassword)
-return showToast('Konfirmasi password tidak cocok');
-
-showLoader();
-
-// cek username sudah dipakai
-const { data: existing } = await db
-.from('profiles')
-.select('username')
-.eq('username', username)
-.single();
-
-if (existing) {
-hideLoader();
-return showToast('Username sudah digunakan');
-}
-
-// buat akun di Supabase Auth
-const { data, error } = await db.auth.signUp({
-email,
-password
-});
-
-if (error) {
-hideLoader();
-return showToast(error.message);
-}
-
-// simpan profil
-const { error: profileError } = await db
-.from('profiles')
-.insert([
-{
-id: data.user.id,
-username: username
-}
-]);
-
-if (profileError) {
-hideLoader();
-return showToast('Gagal membuat profil');
-}
-
-localStorage.setItem('mfa_loggedin', 'true');
-localStorage.setItem('mfa_username', username);
-localStorage.setItem('mfa_userid', data.user.id);
-
-hideLoader();
-
-showToast('Pendaftaran berhasil! Selamat datang 🎵');
-showApp();
-};
-
-// ── EYE TOGGLE PASSWORD ───────────────────────────────────────
-document.querySelectorAll('.pw-eye').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const inp = document.getElementById(btn.dataset.target);
-    if (!inp) return;
-    inp.type = inp.type === 'password' ? 'text' : 'password';
-    btn.textContent = inp.type === 'password' ? '👁' : '🙈';
-  });
-});
-
-if (localStorage.getItem('mfa_loggedin') === 'true') showApp();
-else hideLoader(); // hide loader on login page too
+/* ─── SESSION CHECK SAAT STARTUP ─────────────────────────────── */
+// [FIX P9] Verifikasi session Supabase, bukan hanya flag localStorage
+(async () => {
+  if (localStorage.getItem('mfa_loggedin') === 'true') {
+    const isGuestMode = localStorage.getItem('mfa_guest') === 'true';
+    if (isGuestMode) {
+      showApp();
+      return;
+    }
+    // Cek session aktif
+    const { data: { session } } = await db.auth.getSession();
+    if (session) {
+      showApp();
+    } else {
+      // Session expired — bersihkan flag dan tampilkan login
+      localStorage.removeItem('mfa_loggedin');
+      localStorage.removeItem('mfa_userid');
+      localStorage.removeItem('mfa_email');
+      localStorage.removeItem('mfa_guest');
+      hideLoader();
+    }
+  } else {
+    hideLoader();
+  }
+})();
 
 // ── LOAD SONGS ────────────────────────────────────────────────
 async function loadSongs() {
@@ -1015,10 +958,7 @@ async function loadSongs() {
   }
 
   songs = data;
-
-  // buat 5 rekomendasi acak
   recommendedSongs = shuffle(songs).slice(0, 5);
-
   renderHome();
   renderSearchHistory();
 }
@@ -1031,11 +971,12 @@ function renderHome() {
     albumGrid.innerHTML = '<p style="padding:10px;color:#6b6b7a">Belum ada lagu.</p>';
     return;
   }
-  renderList(albumGrid, recommendedSongs, songs);
+  renderList(albumGrid, recommendedSongs);
 }
 
 // ── RENDER LIST ───────────────────────────────────────────────
-function renderList(container, list, sourceList, fromSearch, playlistId) {
+// [FIX R4] Hapus parameter 'sourceList' yang tidak dipakai
+function renderList(container, list, fromSearch, playlistId) {
   container.innerHTML = '';
   list.forEach((s) => {
     const globalIdx = songs.findIndex(gs => gs.title === s.title && gs.artist === s.artist);
@@ -1110,11 +1051,11 @@ function playSong(i) {
     showPlayError();
   });
 
-  heroTitle.textContent = s.title;
+  heroTitle.textContent  = s.title;
   heroArtist.textContent = s.artist;
-  vinylCover.innerHTML = s.cover ? `<img src="${s.cover}">` : '🎧';
+  vinylCover.innerHTML   = s.cover ? `<img src="${s.cover}">` : '🎧';
 
-  currentSong.textContent = s.title;
+  currentSong.textContent   = s.title;
   currentArtist.textContent = s.artist;
   miniCover.src = s.cover || '';
   miniPlayer.classList.add('visible');
@@ -1123,17 +1064,40 @@ function playSong(i) {
   fpArtist.textContent = s.artist;
   fpVinylCover.innerHTML = s.cover ? `<img src="${s.cover}">` : '🎧';
 
-  // Reset panel ke tengah
   goToPanel(1, false);
 
-  // Rebuild shuffle queue saat lagu baru
   if (shuffleMode) buildShuffledQueue();
 
-  // statistik
   totalSongsPlayed++;
   localStorage.setItem('mfa_songs_played', totalSongsPlayed.toString());
 
   addToHistory(s);
+}
+
+// [FIX BUG #5] Fungsi playNext & playPrev terpisah agar audio.onended
+// tidak bergantung pada referensi nextBtn.onclick
+function playNext() {
+  if (songs.length === 0) return;
+  if (shuffleMode && shuffledQueue.length > 0) {
+    const curIdx = shuffledQueue.findIndex(s => s.id === songs[currentIndex]?.id);
+    const nextShuffled = shuffledQueue[(curIdx + 1) % shuffledQueue.length];
+    const realIdx = songs.findIndex(s => s.id === nextShuffled.id);
+    if (realIdx !== -1) playSong(realIdx);
+  } else {
+    playSong((currentIndex + 1) % songs.length);
+  }
+}
+
+function playPrev() {
+  if (songs.length === 0) return;
+  if (shuffleMode && shuffledQueue.length > 0) {
+    const curIdx = shuffledQueue.findIndex(s => s.id === songs[currentIndex]?.id);
+    const prevShuffled = shuffledQueue[(curIdx - 1 + shuffledQueue.length) % shuffledQueue.length];
+    const realIdx = songs.findIndex(s => s.id === prevShuffled.id);
+    if (realIdx !== -1) playSong(realIdx);
+  } else {
+    playSong((currentIndex - 1 + songs.length) % songs.length);
+  }
 }
 
 // ── PLAY ERROR POPUP ──────────────────────────────────────────
@@ -1151,8 +1115,6 @@ function showPlayError() {
     setTimeout(() => popup.remove(), 400);
   }, 3000);
 }
-
-
 
 // ── CONTROLS ──────────────────────────────────────────────────
 miniPlayBtn.onclick = fpPlay.onclick = () => {
@@ -1172,30 +1134,10 @@ miniPlayBtn.onclick = fpPlay.onclick = () => {
   }
 };
 
-
-nextBtn.onclick = fpNext.onclick = () => {
-  if (shuffleMode && shuffledQueue.length > 0) {
-    const curIdx = shuffledQueue.findIndex(s => s.id === songs[currentIndex]?.id);
-    const nextShuffled = shuffledQueue[(curIdx + 1) % shuffledQueue.length];
-    const realIdx = songs.findIndex(s => s.id === nextShuffled.id);
-    if (realIdx !== -1) playSong(realIdx);
-  } else {
-    playSong((currentIndex + 1) % songs.length);
-  }
-};
-
-prevBtn.onclick = fpPrev.onclick = () => {
-  if (shuffleMode && shuffledQueue.length > 0) {
-    const curIdx = shuffledQueue.findIndex(s => s.id === songs[currentIndex]?.id);
-    const prevShuffled = shuffledQueue[(curIdx - 1 + shuffledQueue.length) % shuffledQueue.length];
-    const realIdx = songs.findIndex(s => s.id === prevShuffled.id);
-    if (realIdx !== -1) playSong(realIdx);
-  } else {
-    playSong((currentIndex - 1 + songs.length) % songs.length);
-  }
-};
-
-audio.onended = () => nextBtn.onclick();
+// [FIX BUG #5] Pakai playNext/playPrev, bukan onclick button
+nextBtn.onclick = fpNext.onclick = () => playNext();
+prevBtn.onclick = fpPrev.onclick = () => playPrev();
+audio.onended = () => playNext();
 
 audio.onerror = () => {
   showPlayError();
@@ -1209,33 +1151,31 @@ audio.onerror = () => {
 audio.ontimeupdate = () => {
   if (!audio.duration) return;
   fpProgress.value = (audio.currentTime / audio.duration) * 100;
-  fpCurrent.textContent = formatTime(audio.currentTime);
+  fpCurrent.textContent  = formatTime(audio.currentTime);
   fpDuration.textContent = formatTime(audio.duration);
 };
 
-fpProgress.oninput = () =>
-  audio.currentTime = (fpProgress.value / 100) * audio.duration;
-
-fpVolume.oninput = () => audio.volume = fpVolume.value;
+fpProgress.oninput = () => { audio.currentTime = (fpProgress.value / 100) * audio.duration; };
+fpVolume.oninput   = () => { audio.volume = fpVolume.value; };
 
 // ── FULL PLAYER ───────────────────────────────────────────────
 miniPlayer.onclick = e => {
   if (!e.target.closest('button')) {
     fullPlayer.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-    goToPanel(1, false); // center panel (piringan), no animation
-    renderQueuePanel();   // pre-render queue so it's ready
+    lockBodyScroll(); // [FIX C2]
+    goToPanel(1, false);
+    renderQueuePanel();
   }
 };
 
 fpBack.onclick = () => {
   fullPlayer.classList.add('hidden');
-  document.body.style.overflow = '';
+  unlockBodyScroll(); // [FIX C2]
 };
 
 // ── NAV ───────────────────────────────────────────────────────
-const sidebarPages = ['pengaturan','langganan','pusataktivitas'];
-const allPages = ['home','search','library','kotakmasuk', ...sidebarPages];
+const sidebarPages = ['pengaturan', 'langganan', 'pusataktivitas'];
+const allPages     = ['home', 'search', 'library', 'kotakmasuk', ...sidebarPages];
 
 function showPage(p) {
   allPages.forEach(name => {
@@ -1247,26 +1187,23 @@ function showPage(p) {
   const target = document.getElementById(p + 'Page');
   if (target) target.classList.add('active');
 
-  if (p === 'home') { homeTab.classList.add('active'); pageTitle.textContent = 'Beranda'; }
+  if (p === 'home')        { homeTab.classList.add('active');    pageTitle.textContent = 'Beranda'; }
   else if (p === 'search') { searchTab.classList.add('active'); pageTitle.textContent = 'Search'; renderSearchHistory(); }
-  else if (p === 'library') { libraryTab.classList.add('active'); pageTitle.textContent = 'Library'; renderLibrary(); }
+  else if (p === 'library'){ libraryTab.classList.add('active'); pageTitle.textContent = 'Library'; renderLibrary(); }
   else if (p === 'kotakmasuk') { inboxTab.classList.add('active'); pageTitle.textContent = 'Kotak Masuk'; }
-  else { pageTitle.textContent = 'MusikForAll'; }
+  else                     { pageTitle.textContent = 'MusikForAll'; }
 }
 
 function showSidebarPage(p) {
   sidebar.classList.remove('open');
   overlay.classList.remove('show');
-
   if (p === 'pusataktivitas') updateActivityStats();
-
   showPage(p);
 }
-
 window.showSidebarPage = showSidebarPage;
 
-homeTab.onclick = () => showPage('home');
-searchTab.onclick = () => showPage('search');
+homeTab.onclick    = () => showPage('home');
+searchTab.onclick  = () => showPage('search');
 libraryTab.onclick = () => showPage('library');
 if (inboxTab) inboxTab.onclick = () => showPage('kotakmasuk');
 
@@ -1278,7 +1215,7 @@ function updateActivityStats() {
   if (el3) el3.textContent = userPlaylists.length;
 }
 
-// ── SEARCH (filter berisi kata kunci di mana saja) ────────────
+// ── SEARCH ────────────────────────────────────────────────────
 searchInput.oninput = () => {
   const q = searchInput.value.toLowerCase().trim();
   if (!q) {
@@ -1299,23 +1236,33 @@ searchInput.oninput = () => {
     searchResults.innerHTML = '<p style="color:#6b6b7a;padding:10px">Tidak ada hasil.</p>';
     return;
   }
-  renderList(searchResults, filtered, songs, true);
+  renderList(searchResults, filtered, true);
 };
 
 // ── DELETE PLAYLIST CONFIRM ───────────────────────────────────
+// [FIX P6] Gunakan fungsi bernama agar tidak menumpuk listener
 function showDeletePlaylistConfirm(playlistId, playlistName) {
-  const modal = document.getElementById('deletePlaylistModal');
+  const modal  = document.getElementById('deletePlaylistModal');
   const nameEl = document.getElementById('deletePlaylistName');
   if (!modal) return;
   if (nameEl) nameEl.textContent = `"${playlistName}"`;
   modal.classList.remove('hidden');
 
-  document.getElementById('deletePlaylistCancel').onclick = () => modal.classList.add('hidden');
-  document.getElementById('deletePlaylistConfirm').onclick = () => {
+  const cancelBtn  = document.getElementById('deletePlaylistCancel');
+  const confirmBtn = document.getElementById('deletePlaylistConfirm');
+
+  // Clone & replace agar tidak ada listener lama menumpuk
+  const newCancel  = cancelBtn.cloneNode(true);
+  const newConfirm = confirmBtn.cloneNode(true);
+  cancelBtn.parentNode.replaceChild(newCancel, cancelBtn);
+  confirmBtn.parentNode.replaceChild(newConfirm, confirmBtn);
+
+  newCancel.onclick  = () => modal.classList.add('hidden');
+  newConfirm.onclick = () => {
     userPlaylists = userPlaylists.filter(p => p.id !== playlistId);
     savePlaylists();
     modal.classList.add('hidden');
-    showToast(`Playlist dihapus`);
+    showToast('Playlist dihapus');
     renderLibrary();
   };
 }
@@ -1324,7 +1271,6 @@ function showDeletePlaylistConfirm(playlistId, playlistName) {
 function renderLibrary() {
   libraryPage.innerHTML = '';
 
-  // === USER PLAYLISTS ===
   userPlaylists.forEach(pl => {
     const sec = document.createElement('div');
     sec.className = 'library-section';
@@ -1346,7 +1292,7 @@ function renderLibrary() {
     if (plSongs.length === 0) {
       container.innerHTML = '<p style="color:#6b6b7a;padding:10px 16px;font-size:13px">Belum ada lagu.</p>';
     } else {
-      renderList(container, plSongs, songs, false, pl.id);
+      renderList(container, plSongs, false, pl.id);
     }
 
     sec.querySelector('.library-playlist-header').onclick = (e) => {
@@ -1368,7 +1314,6 @@ function renderLibrary() {
     };
   });
 
-  // === TAMBAH PLAYLIST ===
   const addBtn = document.createElement('div');
   addBtn.className = 'library-add-btn';
   addBtn.innerHTML = `<span>＋</span> Buat Ruang Baru`;
@@ -1403,12 +1348,12 @@ let playlistAddTargetId = null;
 
 function openPlaylistAddPage(playlistId) {
   playlistAddTargetId = playlistId;
-  const pl = userPlaylists.find(p => p.id === playlistId);
+  const pl      = userPlaylists.find(p => p.id === playlistId);
   const titleEl = document.getElementById('playlistAddTitle');
   if (titleEl && pl) titleEl.textContent = `Tambah ke "${pl.name}"`;
   const page = document.getElementById('playlistAddPage');
   if (page) page.classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
+  lockBodyScroll(); // [FIX C2]
   const searchEl = document.getElementById('playlistAddSearch');
   if (searchEl) { searchEl.value = ''; searchEl.focus(); }
   renderPlaylistAddResults('');
@@ -1417,9 +1362,9 @@ function openPlaylistAddPage(playlistId) {
 function closePlaylistAddPage() {
   const page = document.getElementById('playlistAddPage');
   if (page) page.classList.add('hidden');
-  document.body.style.overflow = '';
+  unlockBodyScroll(); // [FIX C2]
   playlistAddTargetId = null;
-  renderLibrary(); // refresh library setelah selesai
+  renderLibrary();
 }
 
 function renderPlaylistAddResults(query) {
@@ -1461,9 +1406,7 @@ overflow:hidden;
         <div style="font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.title}</div>
         <div style="font-size:12px;color:#6b6b7a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.artist}</div>
       </div>
-      <button class="playlist-add-song-btn ${inPlaylist ? 'added' : ''}">
-        ${inPlaylist ? '✔' : '+'}
-      </button>
+      <button class="playlist-add-song-btn ${inPlaylist ? 'added' : ''}">${inPlaylist ? '✔' : '+'}</button>
     `;
     const btn = item.querySelector('.playlist-add-song-btn');
     btn.onclick = () => {
@@ -1485,39 +1428,36 @@ overflow:hidden;
 }
 
 document.getElementById('playlistAddBack')?.addEventListener('click', closePlaylistAddPage);
-
 document.getElementById('playlistAddSearch')?.addEventListener('input', (e) => {
   renderPlaylistAddResults(e.target.value.toLowerCase().trim());
 });
+
 // ── HARDWARE BACK BUTTON ──────────────────────────────────────
 let backPressedOnce = false;
-let backPressTimer = null;
+let backPressTimer  = null;
 
 window.addEventListener('popstate', handleBack);
-
-// Push initial state so popstate fires on back press
 history.pushState({ page: 'app' }, '');
 
-function handleBack(e) {
-  // Always re-push so next back press fires again
+function handleBack() {
   history.pushState({ page: 'app' }, '');
 
   // 1. Full player open
   if (!fullPlayer.classList.contains('hidden')) {
     fullPlayer.classList.add('hidden');
-    document.body.style.overflow = '';
+    unlockBodyScroll();
     return;
   }
 
   // 2. Profile page open
-  const profilePage = document.getElementById('profilePage');
-  if (profilePage && !profilePage.classList.contains('hidden')) {
-    profilePage.classList.add('hidden');
+  const profilePageEl = document.getElementById('profilePage');
+  if (profilePageEl && !profilePageEl.classList.contains('hidden')) {
+    profilePageEl.classList.add('hidden');
     return;
   }
 
   // 3. Inbox sub pages
-  const inboxSubs = ['inboxFriendPage','inboxSistemPage','inboxAppPage','inboxUpdatePage'];
+  const inboxSubs = ['inboxFriendPage', 'inboxSistemPage', 'inboxAppPage', 'inboxUpdatePage'];
   const openInboxSub = inboxSubs.find(id => {
     const el = document.getElementById(id);
     return el && !el.classList.contains('hidden');
@@ -1525,50 +1465,47 @@ function handleBack(e) {
   if (openInboxSub) { closeInboxSubPage(openInboxSub); return; }
 
   // 4. Playlist add page open
-  const playlistAddPage = document.getElementById('playlistAddPage');
-  if (playlistAddPage && !playlistAddPage.classList.contains('hidden')) {
+  const playlistAddPageEl = document.getElementById('playlistAddPage');
+  if (playlistAddPageEl && !playlistAddPageEl.classList.contains('hidden')) {
     closePlaylistAddPage();
     return;
   }
 
-  // 4. Any modal open — close it
+  // 5. Any modal open
   const openModal = document.querySelector('.modal-overlay:not(.hidden)');
-  if (openModal) {
-    openModal.classList.add('hidden');
-    return;
-  }
+  if (openModal) { openModal.classList.add('hidden'); return; }
 
-  // 5. Sidebar open
+  // 6. Sidebar open
   if (sidebar.classList.contains('open')) {
     sidebar.classList.remove('open');
     overlay.classList.remove('show');
     return;
   }
 
-  // 6. Sidebar pages (pengaturan, kotak masuk, dll) → back to home
+  // 7. Sidebar pages → back to home
   const activeSidebarPage = sidebarPages.find(name => {
     const el = document.getElementById(name + 'Page');
     return el && el.classList.contains('active');
   });
-  if (activeSidebarPage) {
+  if (activeSidebarPage) { showPage('home'); return; }
+
+  // [FIX P7] Kotakmasuk juga back to home
+  const kotakmasukEl = document.getElementById('kotakmasukPage');
+  if (kotakmasukEl && kotakmasukEl.classList.contains('active')) {
     showPage('home');
     return;
   }
 
-  // 7. Search or Library → back to home
-  const currentPage = allPages.find(name => {
+  // 8. Search or Library → back to home
+  const currentActivePage = ['search', 'library'].find(name => {
     const el = document.getElementById(name + 'Page');
     return el && el.classList.contains('active');
   });
-  if (currentPage && currentPage !== 'home') {
-    showPage('home');
-    return;
-  }
+  if (currentActivePage) { showPage('home'); return; }
 
-  // 8. Already on home → confirm exit
+  // 9. Already on home → confirm exit
   if (backPressedOnce) {
     clearTimeout(backPressTimer);
-    // Let the browser close the app naturally
     history.go(-2);
     return;
   }
@@ -1579,33 +1516,38 @@ function handleBack(e) {
 
 // ── INBOX SUB PAGES ───────────────────────────────────────────
 function openInboxSubPage(pageId) {
-  document.getElementById(pageId).classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
-}
-function closeInboxSubPage(pageId) {
-  document.getElementById(pageId).classList.add('hidden');
-  document.body.style.overflow = '';
+  const el = document.getElementById(pageId);
+  if (el) el.classList.remove('hidden');
+  lockBodyScroll(); // [FIX C2]
 }
 
-document.getElementById('inboxFriendBtn')?.addEventListener('click', () => openInboxSubPage('inboxFriendPage'));
-document.getElementById('inboxSistemBtn')?.addEventListener('click', () => openInboxSubPage('inboxSistemPage'));
-document.getElementById('inboxAppBtn')?.addEventListener('click',    () => openInboxSubPage('inboxAppPage'));
-document.getElementById('inboxUpdateBtn')?.addEventListener('click', () => openInboxSubPage('inboxUpdatePage'));
+function closeInboxSubPage(pageId) {
+  const el = document.getElementById(pageId);
+  if (el) el.classList.add('hidden');
+  unlockBodyScroll(); // [FIX C2]
+}
+
+document.getElementById('inboxFriendBtn')?.addEventListener('click',  () => openInboxSubPage('inboxFriendPage'));
+document.getElementById('inboxSistemBtn')?.addEventListener('click',  () => openInboxSubPage('inboxSistemPage'));
+document.getElementById('inboxAppBtn')?.addEventListener('click',     () => openInboxSubPage('inboxAppPage'));
+document.getElementById('inboxUpdateBtn')?.addEventListener('click',  () => openInboxSubPage('inboxUpdatePage'));
 
 document.getElementById('inboxFriendBack')?.addEventListener('click', () => closeInboxSubPage('inboxFriendPage'));
 document.getElementById('inboxSistemBack')?.addEventListener('click', () => closeInboxSubPage('inboxSistemPage'));
 document.getElementById('inboxAppBack')?.addEventListener('click',    () => closeInboxSubPage('inboxAppPage'));
 document.getElementById('inboxUpdateBack')?.addEventListener('click', () => closeInboxSubPage('inboxUpdatePage'));
 
+// ── GUEST MODAL ───────────────────────────────────────────────
 guestStayBtn.onclick = () => {
   guestModal.classList.add('hidden');
 };
 
+// [FIX BUG #6] Sembunyikan app saat guest menekan "Daftar"
 guestRegisterBtn.onclick = () => {
-
   guestModal.classList.add('hidden');
-
+  app.classList.add('hidden');
+  localStorage.removeItem('mfa_guest');    // hapus flag guest agar tidak ikut terbawa
+  localStorage.removeItem('mfa_loggedin'); // belum login dengan akun asli
   loginPage.classList.add('hidden');
   registerPage.classList.remove('hidden');
-
 };
