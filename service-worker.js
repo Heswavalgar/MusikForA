@@ -2,7 +2,7 @@
    MusikForAll — service-worker.js
    ============================================================ */
 
-const CACHE_NAME = 'musikforall-v1';
+const CACHE_NAME = 'musikforall-v1.6';
 
 const ASSETS = [
   '/',
