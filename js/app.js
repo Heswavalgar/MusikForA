@@ -1,5 +1,5 @@
 /* ============================================================
-   MusikForAll — app.js  (FIXED)
+   MusikForAll — app.js
    ============================================================ */
 
 // ── SUPABASE ─────────────────────────────────────────────────
@@ -95,9 +95,7 @@ const profileAvatarImg   = document.getElementById('profileAvatarImg');
 const profileAvatarEmoji = document.getElementById('profileAvatarEmoji');
 const profileAvatarBig   = document.getElementById('profileAvatarBig');
 const profileUsernameEl  = document.getElementById('profileUsername');
-const sidebarLogoAvatar  = document.getElementById('sidebarLogoAvatar');
-const sidebarLogoImg     = document.getElementById('sidebarLogoImg');
-const sidebarLogoEmoji   = document.getElementById('sidebarLogoEmoji');
+// sidebarLogoAvatar/Img/Emoji removed — sidebar logo is now a static element
 const sidebarAvatarImg   = document.getElementById('sidebarAvatarImg');
 const sidebarAvatarEmoji = document.getElementById('sidebarAvatarEmoji');
 const fpSwipeContainer   = document.getElementById('fpSwipeContainer');
@@ -121,6 +119,61 @@ let totalSongsPlayed = 0;
 let recommendedSongs = [];
 let modalTargetSong  = null;
 let profilePhotoUrl  = null;
+
+// ── THEME MANAGER ─────────────────────────────────────────────
+const ThemeManager = (() => {
+  const KEY     = 'mfa_theme';
+  const DEFAULT = 'cool-neon';
+
+  const THEMES = [
+    { value: 'cool-neon',    label: 'Cool Neon'   },
+    { value: 'sakura-soft',  label: 'Sakura Soft' },
+    { value: 'cloud-white',  label: 'Cloud White' },
+  ];
+
+  // Migrate legacy theme keys from old dark/light values
+  function migrate(saved) {
+    if (saved === 'dark')  return 'cool-neon';
+    if (saved === 'light') return 'sakura-soft';
+    return saved;
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem(KEY, theme);
+    _syncUI(theme);
+  }
+
+  function _syncUI(theme) {
+    // Update pill buttons
+    document.querySelectorAll('.theme-btn[data-theme-value]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.themeValue === theme);
+    });
+    // Update legacy label if still present
+    const label = document.getElementById('themeLabelText');
+    if (label) {
+      const found = THEMES.find(t => t.value === theme);
+      if (found) label.textContent = found.label;
+    }
+  }
+
+  function init() {
+    const raw   = localStorage.getItem(KEY) || DEFAULT;
+    const saved = migrate(raw);
+    applyTheme(saved);
+
+    // Wire up pill buttons (rendered in HTML)
+    document.querySelectorAll('.theme-btn[data-theme-value]').forEach(btn => {
+      btn.addEventListener('click', () => applyTheme(btn.dataset.themeValue));
+    });
+  }
+
+  function getTheme() {
+    return document.documentElement.dataset.theme || DEFAULT;
+  }
+
+  return { init, applyTheme, getTheme };
+})();
 
 // ── UTIL ──────────────────────────────────────────────────────
 function showToast(msg, duration = 2500) {
@@ -217,13 +270,15 @@ function setAvatarEl(imgEl, emojiEl, hasPhoto, src) {
 function updateAvatarUI() {
   const has = !!profilePhotoUrl;
   const src = profilePhotoUrl || '';
+  // Sidebar profile avatar (foto user)
   setAvatarEl(sidebarAvatarImg, sidebarAvatarEmoji, has, src);
-  setAvatarEl(sidebarLogoImg, sidebarLogoEmoji, has, src);
+  // Profile page avatar
   setAvatarEl(profileAvatarImg, profileAvatarEmoji, has, src);
 
   const delBtn = document.getElementById('profileDeleteBtn');
   if (delBtn) delBtn.classList.toggle('hidden', !has);
 
+  // Top bar logo button (tetap tampilkan foto jika ada)
   const topLogo = document.getElementById('menuBtn');
   if (topLogo) {
     topLogo.innerHTML = has
@@ -1199,6 +1254,21 @@ function showSidebarPage(p) {
   overlay.classList.remove('show');
   if (p === 'pusataktivitas') updateActivityStats();
   showPage(p);
+  // Sync toggle state setiap kali halaman pengaturan dibuka
+  if (p === 'pengaturan') {
+    const toggle = document.getElementById('themeToggle');
+    const label  = document.getElementById('themeLabelText');
+    const theme  = ThemeManager.getTheme();
+    if (toggle) toggle.checked = (theme === 'light');
+    if (label)  label.textContent = (theme === 'light') ? 'Terang' : 'Gelap';
+    // Pastikan listener tidak double-bind
+    if (toggle && !toggle._themeBound) {
+      toggle._themeBound = true;
+      toggle.addEventListener('change', () => {
+        ThemeManager.applyTheme(toggle.checked ? 'light' : 'dark');
+      });
+    }
+  }
 }
 window.showSidebarPage = showSidebarPage;
 
@@ -1267,64 +1337,376 @@ function showDeletePlaylistConfirm(playlistId, playlistName) {
   };
 }
 
-// ── LIBRARY ───────────────────────────────────────────────────
-function renderLibrary() {
-  libraryPage.innerHTML = '';
+// ── CREATE PLAYLIST MODAL ─────────────────────────────────────
+function openCreatePlaylistModal() {
+  const modal = document.getElementById('createPlaylistModal');
+  const input = document.getElementById('createPlaylistInput');
+  const cancelBtn  = document.getElementById('createPlaylistCancel');
+  const confirmBtn = document.getElementById('createPlaylistConfirm');
+  if (!modal || !input) return;
 
-  userPlaylists.forEach(pl => {
-    const sec = document.createElement('div');
-    sec.className = 'library-section';
-    const plSongs = pl.songs.map(sid => songs.find(s => s.id === sid)).filter(Boolean);
-    sec.innerHTML = `
-      <div class="library-playlist-header">
-        <span class="library-playlist-icon">🎵</span>
-        <span class="library-playlist-name">${pl.name}</span>
-        <span class="library-playlist-count">${plSongs.length} lagu</span>
-        <button class="library-playlist-add" data-id="${pl.id}" title="Tambah Lagu">＋</button>
-        <button class="library-playlist-del" data-id="${pl.id}" title="Hapus Ruang">✕</button>
-        <span class="library-chevron">▾</span>
-      </div>
-      <div class="library-playlist-songs" style="display:none"></div>
-    `;
-    libraryPage.appendChild(sec);
+  input.value = '';
+  modal.classList.remove('hidden');
+  lockBodyScroll();
+  setTimeout(() => input.focus(), 120);
 
-    const container = sec.querySelector('.library-playlist-songs');
-    if (plSongs.length === 0) {
-      container.innerHTML = '<p style="color:#6b6b7a;padding:10px 16px;font-size:13px">Belum ada lagu.</p>';
-    } else {
-      renderList(container, plSongs, false, pl.id);
+  // Clone buttons to avoid listener accumulation
+  const newCancel  = cancelBtn.cloneNode(true);
+  const newConfirm = confirmBtn.cloneNode(true);
+  cancelBtn.parentNode.replaceChild(newCancel, cancelBtn);
+  confirmBtn.parentNode.replaceChild(newConfirm, confirmBtn);
+
+  function closeModal() {
+    modal.classList.add('hidden');
+    unlockBodyScroll();
+  }
+
+  newCancel.onclick = closeModal;
+  modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+
+  newConfirm.onclick = () => {
+    const name = document.getElementById('createPlaylistInput').value.trim();
+    if (!name) {
+      document.getElementById('createPlaylistInput').focus();
+      return;
     }
-
-    sec.querySelector('.library-playlist-header').onclick = (e) => {
-      if (e.target.closest('.library-playlist-del')) return;
-      if (e.target.closest('.library-playlist-add')) return;
-      const open = container.style.display !== 'none';
-      container.style.display = open ? 'none' : 'block';
-      sec.querySelector('.library-chevron').textContent = open ? '▾' : '▴';
-    };
-
-    sec.querySelector('.library-playlist-add').onclick = (e) => {
-      e.stopPropagation();
-      openPlaylistAddPage(pl.id);
-    };
-
-    sec.querySelector('.library-playlist-del').onclick = (e) => {
-      e.stopPropagation();
-      showDeletePlaylistConfirm(pl.id, pl.name);
-    };
-  });
-
-  const addBtn = document.createElement('div');
-  addBtn.className = 'library-add-btn';
-  addBtn.innerHTML = `<span>＋</span> Buat Ruang Baru`;
-  addBtn.onclick = () => {
-    const name = prompt('Nama ruang baru:');
-    if (!name || !name.trim()) return;
-    createPlaylist(name.trim());
+    createPlaylist(name);
+    closeModal();
+    showToast(`Playlist "${name}" dibuat ✔`);
     renderLibrary();
   };
-  libraryPage.appendChild(addBtn);
+
+  // Submit on Enter key
+  input.onkeydown = (e) => {
+    if (e.key === 'Enter') newConfirm.onclick();
+  };
 }
+
+// ── PLAYLIST MODERN — HELPER AUTO COVER ──────────────────────
+function buildPlaylistCoverHTML(pl) {
+  if (pl.cover) {
+    return `<img src="${pl.cover}" alt="${pl.name}" style="width:100%;height:100%;object-fit:cover;display:block;">`;
+  }
+  const plSongs = (pl.songs || []).map(sid => songs.find(s => s.id === sid)).filter(Boolean);
+  const covers  = plSongs.map(s => s.cover).filter(Boolean).slice(0, 4);
+
+  if (covers.length === 0) {
+    return `<div class="pl-cover-single-placeholder">🎵</div>`;
+  }
+  if (covers.length === 1) {
+    return `<img src="${covers[0]}" alt="${pl.name}" style="width:100%;height:100%;object-fit:cover;display:block;">`;
+  }
+  // 2-4 covers → quad grid
+  const cells = Array.from({ length: 4 }, (_, i) => {
+    if (covers[i]) {
+      return `<div class="pl-cover-quad-cell"><img src="${covers[i]}" alt="" onerror="this.parentElement.innerHTML='<span class=pl-cover-placeholder>🎵</span>'"></div>`;
+    }
+    return `<div class="pl-cover-quad-cell"><span class="pl-cover-placeholder">🎵</span></div>`;
+  }).join('');
+  return `<div class="pl-cover-quad">${cells}</div>`;
+}
+
+// ── LIBRARY ───────────────────────────────────────────────────
+function renderLibrary() {
+  if (!libraryPage) return;
+  libraryPage.innerHTML = '';
+  const username = localStorage.getItem('mfa_username') || 'kamu';
+
+  // ── Header ──────────────────────────────────────────────────
+  const header = document.createElement('div');
+  header.className = 'lib-header';
+
+  const avatarEl = document.createElement('div');
+  avatarEl.className = 'lib-header-avatar';
+  avatarEl.style.cursor = 'pointer';
+  avatarEl.onclick = () => showProfilePage && showProfilePage();
+  if (profilePhotoUrl) {
+    avatarEl.innerHTML = `<img src="${profilePhotoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  } else {
+    avatarEl.textContent = '👤';
+  }
+
+  const titleEl = document.createElement('div');
+  titleEl.className = 'lib-header-title';
+  titleEl.textContent = 'Your Library';
+
+  const actionsEl = document.createElement('div');
+  actionsEl.className = 'lib-header-actions';
+
+  const addBtn = document.createElement('button');
+  addBtn.className = 'lib-icon-btn';
+  addBtn.title = 'Buat Playlist Baru';
+  addBtn.innerHTML = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`;
+  addBtn.onclick = () => {
+    if (isGuest()) { requireAccount(); return; }
+    openCreatePlaylistModal();
+  };
+
+  actionsEl.appendChild(addBtn);
+  header.appendChild(avatarEl);
+  header.appendChild(titleEl);
+  header.appendChild(actionsEl);
+  libraryPage.appendChild(header);
+
+  // ── Filter chips ────────────────────────────────────────────
+  const chips = document.createElement('div');
+  chips.className = 'lib-chips';
+  chips.innerHTML = `
+    <button class="lib-chip active">Playlists</button>
+    <button class="lib-chip">Artists</button>
+  `;
+  libraryPage.appendChild(chips);
+
+  // ── Empty state ─────────────────────────────────────────────
+  if (userPlaylists.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'lib-empty';
+    empty.innerHTML = `
+      <div class="lib-empty-icon">🎵</div>
+      <div class="lib-empty-title">Belum ada playlist</div>
+      <div class="lib-empty-desc">Buat playlist pertamamu untuk mulai menikmati musik</div>
+      <button class="lib-empty-btn">Buat Playlist</button>
+    `;
+    empty.querySelector('.lib-empty-btn').onclick = () => {
+      if (isGuest()) { requireAccount(); return; }
+      openCreatePlaylistModal();
+    };
+    libraryPage.appendChild(empty);
+    return;
+  }
+
+  // ── Grid kartu playlist ──────────────────────────────────────
+  const grid = document.createElement('div');
+  grid.className = 'pl-grid';
+
+  userPlaylists.forEach(pl => {
+    const card = document.createElement('div');
+    card.className = 'pl-card';
+
+    const coverEl = document.createElement('div');
+    coverEl.className = 'pl-card-cover';
+    coverEl.innerHTML = buildPlaylistCoverHTML(pl);
+
+    // Tombol aksi overlay di atas cover
+    const actionsOverlay = document.createElement('div');
+    actionsOverlay.className = 'pl-card-actions';
+
+    const addSongBtn = document.createElement('button');
+    addSongBtn.className = 'pl-card-action-btn';
+    addSongBtn.title = 'Tambah lagu';
+    addSongBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`;
+    addSongBtn.onclick = (e) => { e.stopPropagation(); openPlaylistAddPage(pl.id); };
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'pl-card-action-btn';
+    delBtn.title = 'Hapus playlist';
+    delBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>`;
+    delBtn.onclick = (e) => { e.stopPropagation(); showDeletePlaylistConfirm(pl.id, pl.name); };
+
+    actionsOverlay.appendChild(addSongBtn);
+    actionsOverlay.appendChild(delBtn);
+    coverEl.appendChild(actionsOverlay);
+
+    const infoEl = document.createElement('div');
+    infoEl.className = 'pl-card-info';
+    infoEl.innerHTML = `
+      <div class="pl-card-name">${pl.name}</div>
+      <div class="pl-card-count">${(pl.songs || []).length} lagu</div>
+      <div class="pl-card-creator">by @${username}</div>
+    `;
+
+    card.appendChild(coverEl);
+    card.appendChild(infoEl);
+    card.onclick = () => openPlaylistDetail(pl.id);
+    grid.appendChild(card);
+  });
+
+  libraryPage.appendChild(grid);
+}
+
+// ── PLAYLIST DETAIL PAGE ──────────────────────────────────────
+let currentOpenPlaylistId = null;
+
+function openPlaylistDetail(playlistId) {
+  currentOpenPlaylistId = playlistId;
+  renderPlaylistDetailPage();
+  const page = document.getElementById('playlistDetailPage');
+  if (page) page.classList.remove('hidden');
+  lockBodyScroll();
+}
+
+function closePlaylistDetail() {
+  const page = document.getElementById('playlistDetailPage');
+  if (page) page.classList.add('hidden');
+  unlockBodyScroll();
+  currentOpenPlaylistId = null;
+  renderLibrary();
+}
+
+function renderPlaylistDetailPage() {
+  const pl = userPlaylists.find(p => p.id === currentOpenPlaylistId);
+  if (!pl) return;
+  const username = localStorage.getItem('mfa_username') || 'user';
+  const plSongs  = (pl.songs || []).map(sid => songs.find(s => s.id === sid)).filter(Boolean);
+
+  const coverEl = document.getElementById('playlistDetailCover');
+  if (coverEl) coverEl.innerHTML = buildPlaylistCoverHTML(pl);
+
+  const nameEl = document.getElementById('playlistDetailName');
+  if (nameEl) nameEl.textContent = pl.name;
+
+  const metaEl = document.getElementById('playlistDetailMeta');
+  if (metaEl) metaEl.textContent = `Playlist • @${username}`;
+
+  const countEl = document.getElementById('playlistDetailCount');
+  if (countEl) countEl.textContent = `${plSongs.length} lagu`;
+
+  const songsEl = document.getElementById('playlistDetailSongs');
+  if (!songsEl) return;
+  songsEl.innerHTML = '';
+
+  if (plSongs.length === 0) {
+    songsEl.innerHTML = `<div class="pl-detail-empty">Belum ada lagu di playlist ini.<br>Ketuk <strong>+</strong> untuk menambahkan lagu.</div>`;
+    return;
+  }
+
+  plSongs.forEach(s => {
+    const globalIdx = songs.findIndex(gs => gs.id === s.id);
+    const item = document.createElement('div');
+    item.className = 'song-item';
+    if (currentIndex !== -1 && globalIdx === currentIndex) item.classList.add('active-song');
+
+    item.innerHTML = `
+      <img class="song-cover" src="${s.cover || ''}" onerror="this.style.opacity=0">
+      <div class="song-info">
+        <div class="song-title">${s.title}</div>
+        <div class="song-artist">${s.artist}</div>
+      </div>
+      <button class="pl-detail-remove-btn" title="Hapus dari playlist">🗑</button>
+      <button class="song-play-btn">▶</button>
+    `;
+
+    item.onclick = (e) => {
+      if (e.target.closest('.song-play-btn') || e.target.closest('.pl-detail-remove-btn')) return;
+      if (globalIdx !== -1) playSong(globalIdx);
+    };
+    item.querySelector('.song-play-btn').onclick = (e) => {
+      e.stopPropagation();
+      if (globalIdx !== -1) playSong(globalIdx);
+    };
+    // BUG FIX: hanya refresh detail page, bukan renderLibrary()
+    item.querySelector('.pl-detail-remove-btn').onclick = (e) => {
+      e.stopPropagation();
+      pl.songs = pl.songs.filter(id => id !== s.id);
+      savePlaylists();
+      showToast(`"${s.title}" dihapus`);
+      renderPlaylistDetailPage();
+    };
+    songsEl.appendChild(item);
+  });
+}
+
+document.getElementById('playlistDetailBack')?.addEventListener('click', closePlaylistDetail);
+
+document.getElementById('playlistDetailPlayBtn')?.addEventListener('click', () => {
+  const pl = userPlaylists.find(p => p.id === currentOpenPlaylistId);
+  if (!pl || !pl.songs || pl.songs.length === 0) { showToast('Playlist kosong'); return; }
+  const firstSong = pl.songs.map(sid => songs.find(s => s.id === sid)).find(Boolean);
+  if (!firstSong) return;
+  const idx = songs.findIndex(s => s.id === firstSong.id);
+  if (idx !== -1) playSong(idx);
+  showToast(`▶ Memutar "${pl.name}"`);
+});
+
+document.getElementById('playlistDetailShuffleBtn')?.addEventListener('click', () => {
+  const pl = userPlaylists.find(p => p.id === currentOpenPlaylistId);
+  if (!pl || !pl.songs || pl.songs.length === 0) { showToast('Playlist kosong'); return; }
+  const plSongs = pl.songs.map(sid => songs.find(s => s.id === sid)).filter(Boolean);
+  if (plSongs.length === 0) return;
+  shuffleMode = true;
+  const fpShuffleBtn = document.getElementById('fpShuffle');
+  if (fpShuffleBtn) fpShuffleBtn.classList.add('active');
+  const randomSong = plSongs[Math.floor(Math.random() * plSongs.length)];
+  const idx = songs.findIndex(s => s.id === randomSong.id);
+  if (idx !== -1) { playSong(idx); buildShuffledQueue(); }
+  showToast('🔀 Shuffle aktif');
+});
+
+document.getElementById('playlistDetailEditBtn')?.addEventListener('click', () => {
+  openEditPlaylistModal(currentOpenPlaylistId);
+});
+
+// ── EDIT PLAYLIST MODAL ───────────────────────────────────────
+let editPlaylistTargetId = null;
+let editPlaylistNewCover = null;
+
+function openEditPlaylistModal(playlistId) {
+  editPlaylistTargetId = playlistId;
+  editPlaylistNewCover = null;
+  const pl = userPlaylists.find(p => p.id === playlistId);
+  if (!pl) return;
+  const modal     = document.getElementById('editPlaylistModal');
+  const nameInput = document.getElementById('editPlaylistNameInput');
+  const preview   = document.getElementById('editPlaylistCoverPreview');
+  if (!modal) return;
+  if (nameInput) nameInput.value = pl.name;
+  if (preview)   preview.innerHTML = pl.cover
+    ? `<img src="${pl.cover}" alt="cover">`
+    : buildPlaylistCoverHTML(pl);
+  modal.classList.remove('hidden');
+  lockBodyScroll();
+  setTimeout(() => nameInput && nameInput.focus(), 120);
+}
+
+function closeEditPlaylistModal() {
+  const modal = document.getElementById('editPlaylistModal');
+  if (modal) modal.classList.add('hidden');
+  unlockBodyScroll();
+  editPlaylistTargetId = null;
+  editPlaylistNewCover = null;
+}
+
+document.getElementById('editPlaylistCoverBtn')?.addEventListener('click', () => {
+  document.getElementById('editPlaylistCoverInput')?.click();
+});
+
+document.getElementById('editPlaylistCoverInput')?.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  e.target.value = '';
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    editPlaylistNewCover = ev.target.result;
+    const preview = document.getElementById('editPlaylistCoverPreview');
+    if (preview) preview.innerHTML = `<img src="${editPlaylistNewCover}" alt="cover">`;
+    showToast('Cover baru dipilih ✔');
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('editPlaylistCancel')?.addEventListener('click', closeEditPlaylistModal);
+
+document.getElementById('editPlaylistModal')?.addEventListener('click', (e) => {
+  if (e.target === document.getElementById('editPlaylistModal')) closeEditPlaylistModal();
+});
+
+document.getElementById('editPlaylistSave')?.addEventListener('click', () => {
+  const pl = userPlaylists.find(p => p.id === editPlaylistTargetId);
+  if (!pl) return;
+  const nameInput = document.getElementById('editPlaylistNameInput');
+  const newName   = nameInput ? nameInput.value.trim() : '';
+  if (!newName) { if (nameInput) nameInput.focus(); showToast('Nama tidak boleh kosong'); return; }
+  pl.name = newName;
+  if (editPlaylistNewCover) pl.cover = editPlaylistNewCover;
+  savePlaylists();
+  closeEditPlaylistModal();
+  showToast(`Playlist "${newName}" diperbarui ✔`);
+  if (currentOpenPlaylistId === editPlaylistTargetId) renderPlaylistDetailPage();
+});
+
+document.getElementById('editPlaylistNameInput')?.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') document.getElementById('editPlaylistSave')?.click();
+});
 
 // ── SIDEBAR ───────────────────────────────────────────────────
 menuBtn.onclick = () => {
@@ -1442,6 +1824,20 @@ history.pushState({ page: 'app' }, '');
 function handleBack() {
   history.pushState({ page: 'app' }, '');
 
+  // 0. Playlist detail page open
+  const playlistDetailPageEl = document.getElementById('playlistDetailPage');
+  if (playlistDetailPageEl && !playlistDetailPageEl.classList.contains('hidden')) {
+    closePlaylistDetail();
+    return;
+  }
+
+  // 0b. Edit playlist modal open
+  const editModalEl = document.getElementById('editPlaylistModal');
+  if (editModalEl && !editModalEl.classList.contains('hidden')) {
+    closeEditPlaylistModal();
+    return;
+  }
+
   // 1. Full player open
   if (!fullPlayer.classList.contains('hidden')) {
     fullPlayer.classList.add('hidden');
@@ -1551,3 +1947,9 @@ guestRegisterBtn.onclick = () => {
   loginPage.classList.add('hidden');
   registerPage.classList.remove('hidden');
 };
+
+// ── THEME INIT ────────────────────────────────────────────────
+// Inisialisasi tema saat halaman pertama kali dimuat.
+// Dipanggil di sini (bukan DOMContentLoaded) karena script diload
+// secara defer/sync setelah DOM tersedia.
+ThemeManager.init();
