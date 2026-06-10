@@ -4,6 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MusikForAll</title>
+  <!-- Anti-flash: terapkan tema SEBELUM CSS render -->
+  <script>
+    (function(){
+      var t = localStorage.getItem('mfa_theme') || 'cool-neon';
+      // Migrate legacy theme keys
+      if (t === 'dark')  t = 'cool-neon';
+      if (t === 'light') t = 'sakura-soft';
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
   <link rel="stylesheet" href="css/style.css">
   <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#c8f060">
@@ -127,7 +137,12 @@
         <h2>Pengaturan</h2>
         <p>Kelola preferensi aplikasimu di sini.</p>
         <div class="sp-item">
-          <span>Tema</span><span class="sp-value">Gelap</span>
+          <span>Tema</span>
+          <div class="theme-selector">
+            <button class="theme-btn" data-theme-value="cool-neon">Cool Neon</button>
+            <button class="theme-btn" data-theme-value="sakura-soft">Sakura Soft</button>
+            <button class="theme-btn" data-theme-value="cloud-white">Cloud White</button>
+          </div>
         </div>
         <div class="sp-item">
           <span>Bahasa</span><span class="sp-value">Indonesia</span>
@@ -376,13 +391,12 @@
 
   <!-- HEADER -->
   <div class="sidebar-header">
+    <!-- Baris 1: Logo Aplikasi -->
     <div class="sidebar-logo-wrap">
-      <div class="sidebar-logo-avatar" id="sidebarLogoAvatar">
-        <img id="sidebarLogoImg" src="" alt="" style="display:none">
-        <span id="sidebarLogoEmoji">👤</span>
-      </div>
+      <div class="sidebar-app-logo">🎵</div>
       <div class="sidebar-logo">MusikForAll</div>
     </div>
+    <!-- Baris 2: Foto Profil User -->
     <div class="sidebar-profile">
       <div class="sidebar-avatar" id="sidebarAvatar">
         <img id="sidebarAvatarImg" src="" alt="" style="display:none">
@@ -512,6 +526,21 @@
     <div style="display:flex;gap:10px;margin-top:16px;">
       <button class="modal-close" id="deletePlaylistCancel" style="flex:1">Batal</button>
       <button id="deletePlaylistConfirm" style="flex:1;padding:13px;background:#f87171;color:#fff;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;">Hapus</button>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE PLAYLIST MODAL -->
+<div class="modal-overlay hidden" id="createPlaylistModal">
+  <div class="modal-card">
+    <div style="font-size:32px;text-align:center;margin-bottom:8px">🎵</div>
+    <div class="modal-title" style="text-align:center">Buat Playlist Baru</div>
+    <div class="modal-subtitle" style="text-align:center;margin-bottom:20px">Beri nama untuk playlist-mu</div>
+    <input type="text" id="createPlaylistInput" class="profile-edit-input"
+      placeholder="Nama playlist..." maxlength="50" autocomplete="off">
+    <div style="display:flex;gap:10px;margin-top:14px;">
+      <button class="modal-close" id="createPlaylistCancel" style="flex:1">Batal</button>
+      <button id="createPlaylistConfirm" style="flex:1;padding:13px;background:var(--accent);color:var(--accent-btn-text);border:none;border-radius:12px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">Buat Playlist</button>
     </div>
   </div>
 </div>
@@ -686,6 +715,54 @@
 
     </div>
 
+  </div>
+</div>
+
+<!-- PLAYLIST DETAIL PAGE (fullscreen) -->
+<div class="full-player hidden" id="playlistDetailPage">
+  <div class="fp-header">
+    <button class="fp-back" id="playlistDetailBack">︎﹀</button>
+    <span class="fp-title">Playlist</span>
+    <div></div>
+  </div>
+  <div class="pl-detail-body">
+    <div class="pl-detail-cover-wrap">
+      <div class="pl-detail-cover" id="playlistDetailCover"></div>
+    </div>
+    <div class="pl-detail-info">
+      <div class="pl-detail-name" id="playlistDetailName">Nama Playlist</div>
+      <div class="pl-detail-meta" id="playlistDetailMeta">Playlist • @user</div>
+      <div class="pl-detail-count" id="playlistDetailCount">0 lagu</div>
+    </div>
+    <div class="pl-detail-actions">
+      <button class="pl-detail-btn pl-detail-play" id="playlistDetailPlayBtn">
+        <span>▶</span> Putar
+      </button>
+      <button class="pl-detail-btn pl-detail-shuffle" id="playlistDetailShuffleBtn">
+        <span>🔀</span> Acak
+      </button>
+      <button class="pl-detail-btn pl-detail-edit" id="playlistDetailEditBtn">
+        <span>✏</span> Edit
+      </button>
+    </div>
+    <div class="pl-detail-divider"></div>
+    <div class="pl-detail-songs" id="playlistDetailSongs"></div>
+  </div>
+</div>
+
+<!-- EDIT PLAYLIST MODAL -->
+<div class="modal-overlay hidden" id="editPlaylistModal">
+  <div class="modal-card">
+    <div class="modal-title" style="text-align:center">Edit Playlist</div>
+    <div class="pl-edit-cover-preview" id="editPlaylistCoverPreview"></div>
+    <button class="pl-edit-cover-btn" id="editPlaylistCoverBtn">📷 Ganti Cover</button>
+    <input type="file" id="editPlaylistCoverInput" accept="image/*" style="display:none">
+    <input type="text" id="editPlaylistNameInput" class="profile-edit-input"
+      placeholder="Nama playlist..." maxlength="50" autocomplete="off" style="margin-top:14px">
+    <div style="display:flex;gap:10px;margin-top:14px;">
+      <button class="modal-close" id="editPlaylistCancel" style="flex:1">Batal</button>
+      <button id="editPlaylistSave" style="flex:1;padding:13px;background:var(--accent);color:var(--accent-btn-text);border:none;border-radius:12px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">Simpan</button>
+    </div>
   </div>
 </div>
 
