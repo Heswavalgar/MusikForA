@@ -1,0 +1,111 @@
+/* ============================================================
+   reset.css — Reset & Base Global Styles
+   MusikForAll
+   ============================================================ */
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--grad-bg, var(--bg));
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+audio { display: none; }
+
+.hidden { display: none !important; }
+
+/* ============================================================
+   MASALAH 1: Hilangkan tap highlight & focus outline bawaan
+   Android Chrome, WebView, PWA
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none; /* Cegah callout menu saat long-press link di iOS */
+}
+
+button,
+a,
+[role="button"],
+.bottom-item,
+.sidebar-item,
+.song-item,
+.pl-card,
+.pl-card-action-btn,
+.mini-player,
+.mini-btn,
+.fp-btn,
+.fp-back,
+.lib-chip,
+.lib-icon-btn,
+.heart-btn,
+.inbox-item,
+.friend-item,
+.chat-attach-item,
+.modal-playlist-item,
+.search-history-item,
+.fp-queue-item,
+.fav-system-card,
+.fav-system-play-btn,
+.fav-system-shuffle-btn,
+.profile-field-edit,
+.profile-upload-btn,
+.profile-delete-btn,
+.profile-action-btn,
+.crop-btn,
+.guest-banner-login,
+.guest-banner-register,
+.guest-modal-actions button,
+.pl-detail-btn,
+.playlist-add-song-btn,
+.friend-add-btn,
+.friend-accept-btn,
+.friend-reject-btn,
+.friend-remove-btn,
+.friend-chat-btn,
+.chat-send-btn,
+.chat-attach-btn,
+.theme-btn,
+.top-bar-logo,
+.lib-empty-btn,
+.chat-song-pick-item {
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+/* Hapus outline focus bawaan, tapi tetap accessibility-friendly
+   (hanya hilang untuk pointer/touch, tetap muncul saat keyboard Tab) */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ============================================================
+   MASALAH 2: Cegah text selection pada elemen UI
+   tapi biarkan input & textarea tetap normal
+   ============================================================ */
+
+body {
+  -webkit-user-select: none; /* Android Chrome / WebView */
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Kembalikan seleksi normal HANYA untuk elemen input */
+input,
+textarea,
+[contenteditable="true"] {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}

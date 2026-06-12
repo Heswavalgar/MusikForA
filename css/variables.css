@@ -1,0 +1,116 @@
+/* ============================================================
+   variables.css — CSS Custom Properties & Theme Definitions
+   MusikForAll
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+/* ── Cool Neon (default) ─────────────────────────────────── */
+:root,
+[data-theme="cool-neon"] {
+  --bg: #0a0a0f;
+  --bg-rgb: 10,10,15;
+  --surface2: #1c1c26;
+  --accent: #c8f060;
+  --accent2: #60c8f0;
+  --text: #f0ede8;
+  --subtext: #6b6b7a;
+  --border: rgba(255,255,255,0.06);
+  --shadow: rgba(0,0,0,0.4);
+  --overlay-bg: rgba(0,0,0,0.7);
+  --vinyl-track1: #1a1a1a;
+  --vinyl-track2: #2a2a2a;
+  --vinyl-hole: #0a0a0f;
+  --vinyl-border: #111;
+  --vinyl-cover-bg: #222;
+  --accent-btn-text: #0a0a0f;
+  --player-h: 72px;
+  --nav-h: 64px;
+  /* Gradients */
+  --grad-bg: linear-gradient(160deg, #0a0a0f 0%, #0d0d1a 50%, #080b12 100%);
+  --grad-surface: linear-gradient(135deg, #13131a 0%, #18182a 100%);
+  --grad-accent: linear-gradient(135deg, #c8f060 0%, #60c8f0 100%);
+  --grad-accent-hover: linear-gradient(135deg, #d4f570 0%, #70d4f8 100%);
+  --grad-topbar: linear-gradient(180deg, #0a0a0f 0%, rgba(10,10,15,0.92) 100%);
+  --grad-player: linear-gradient(135deg, #13131a 0%, #1a1a28 100%);
+  --grad-nav: linear-gradient(0deg, #13131a 0%, #16161f 100%);
+  --grad-hero: radial-gradient(ellipse at 20% 50%, rgba(200,240,96,0.08) 0%, transparent 60%),
+               radial-gradient(ellipse at 80% 20%, rgba(96,200,240,0.07) 0%, transparent 50%),
+               radial-gradient(ellipse at 50% 90%, rgba(96,200,240,0.04) 0%, transparent 40%);
+  --grad-page-home:    linear-gradient(180deg, rgba(200,240,96,0.09) 0%, rgba(96,200,240,0.05) 40%, transparent 75%);
+  --grad-page-search:  linear-gradient(150deg, rgba(96,200,240,0.09) 0%, rgba(200,240,96,0.04) 55%, transparent 80%);
+  --grad-page-library: linear-gradient(180deg, rgba(96,200,240,0.10) 0%, rgba(200,240,96,0.04) 45%, transparent 75%);
+  --grad-page-inbox:   linear-gradient(150deg, rgba(200,240,96,0.06) 0%, rgba(96,200,240,0.08) 55%, transparent 80%);
+}
+
+/* ── Sakura Soft ─────────────────────────────────────────── */
+[data-theme="sakura-soft"] {
+  --bg: #FFF5F7;
+  --bg-rgb: 255,245,247;
+  --surface2: #FFD1E0;
+  --accent: #FF5C8A;
+  --accent2: #E64980;
+  --text: #2A2A2A;
+  --subtext: #707070;
+  --border: #F5B3C8;
+  --shadow: rgba(255,92,138,0.12);
+  --overlay-bg: rgba(42,42,42,0.5);
+  --vinyl-track1: #F5B3C8;
+  --vinyl-track2: #FFD1E0;
+  --vinyl-hole: #FFF5F7;
+  --vinyl-border: #F5B3C8;
+  --vinyl-cover-bg: #FFE4EC;
+  --accent-btn-text: #ffffff;
+  --player-h: 72px;
+  --nav-h: 64px;
+  --grad-bg: linear-gradient(160deg, #FFF5F7 0%, #FFF0F4 50%, #FFF8FA 100%);
+  --grad-surface: linear-gradient(135deg, #FFE4EC 0%, #FFD6E7 100%);
+  --grad-accent: linear-gradient(135deg, #FF5C8A 0%, #E64980 100%);
+  --grad-accent-hover: linear-gradient(135deg, #FF7AA0 0%, #F05590 100%);
+  --grad-topbar: linear-gradient(180deg, #FFF5F7 0%, rgba(255,245,247,0.92) 100%);
+  --grad-player: linear-gradient(135deg, #FFE4EC 0%, #FFD1E0 100%);
+  --grad-nav: linear-gradient(0deg, #FFE4EC 0%, #FFECF2 100%);
+  --grad-hero: radial-gradient(ellipse at 20% 50%, rgba(255,92,138,0.12) 0%, transparent 60%),
+               radial-gradient(ellipse at 80% 20%, rgba(230,73,128,0.08) 0%, transparent 50%),
+               radial-gradient(ellipse at 50% 90%, rgba(255,92,138,0.06) 0%, transparent 40%);
+  --grad-page-home:    linear-gradient(180deg, rgba(255,92,138,0.14) 0%, rgba(230,73,128,0.06) 40%, transparent 75%);
+  --grad-page-search:  linear-gradient(150deg, rgba(230,73,128,0.12) 0%, rgba(255,92,138,0.05) 55%, transparent 80%);
+  --grad-page-library: linear-gradient(180deg, rgba(255,92,138,0.16) 0%, rgba(230,73,128,0.05) 45%, transparent 75%);
+  --grad-page-inbox:   linear-gradient(150deg, rgba(230,73,128,0.10) 0%, rgba(255,92,138,0.08) 55%, transparent 80%);
+}
+
+/* ── Cloud White ─────────────────────────────────────────── */
+[data-theme="cloud-white"] {
+  --bg: #F8FAFC;
+  --bg-rgb: 248,250,252;
+  --surface2: #F1F5F9;
+  --accent: #3B82F6;
+  --accent2: #60A5FA;
+  --text: #0F172A;
+  --subtext: #64748B;
+  --border: #E2E8F0;
+  --shadow: rgba(15,23,42,0.08);
+  --overlay-bg: rgba(15,23,42,0.45);
+  --vinyl-track1: #E2E8F0;
+  --vinyl-track2: #CBD5E1;
+  --vinyl-hole: #F8FAFC;
+  --vinyl-border: #CBD5E1;
+  --vinyl-cover-bg: #F1F5F9;
+  --accent-btn-text: #ffffff;
+  --player-h: 72px;
+  --nav-h: 64px;
+  --grad-bg: linear-gradient(160deg, #F8FAFC 0%, #F0F6FF 50%, #F5F8FC 100%);
+  --grad-surface: linear-gradient(135deg, #FFFFFF 0%, #F4F8FF 100%);
+  --grad-accent: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
+  --grad-accent-hover: linear-gradient(135deg, #5595F8 0%, #78B5FC 100%);
+  --grad-topbar: linear-gradient(180deg, #F8FAFC 0%, rgba(248,250,252,0.92) 100%);
+  --grad-player: linear-gradient(135deg, #FFFFFF 0%, #F0F6FF 100%);
+  --grad-nav: linear-gradient(0deg, #FFFFFF 0%, #F8FAFC 100%);
+  --grad-hero: radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.08) 0%, transparent 60%),
+               radial-gradient(ellipse at 80% 20%, rgba(96,165,250,0.06) 0%, transparent 50%),
+               radial-gradient(ellipse at 50% 90%, rgba(59,130,246,0.04) 0%, transparent 40%);
+  --grad-page-home:    linear-gradient(180deg, rgba(59,130,246,0.10) 0%, rgba(96,165,250,0.05) 40%, transparent 75%);
+  --grad-page-search:  linear-gradient(150deg, rgba(96,165,250,0.10) 0%, rgba(59,130,246,0.04) 55%, transparent 80%);
+  --grad-page-library: linear-gradient(180deg, rgba(59,130,246,0.12) 0%, rgba(96,165,250,0.04) 45%, transparent 75%);
+  --grad-page-inbox:   linear-gradient(150deg, rgba(96,165,250,0.08) 0%, rgba(59,130,246,0.07) 55%, transparent 80%);
+}

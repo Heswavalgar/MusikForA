@@ -1,0 +1,45 @@
+/* ============================================================
+   animations.css — Keyframe Animations
+   MusikForAll
+   ============================================================ */
+
+/* ── VINYL SPIN ──────────────────────────────────────────── */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── HEART POP ───────────────────────────────────────────── */
+@keyframes heartPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.35); }
+  70%  { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+/* ── SKELETON PULSE ──────────────────────────────────────── */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* ── LIBRARY FADE IN ─────────────────────────────────────── */
+@keyframes lib-fadein {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── SMOOTH THEME TRANSITIONS ────────────────────────────── */
+body, .full-player, .sidebar, .mini-player, .modal-card,
+.profile-page, .login-card, .app-loader {
+  transition: background 0.25s ease, color 0.15s ease, border-color 0.25s ease;
+}
+
+.fav-system-card,
+.heart-btn,
+.fav-system-play-btn,
+.fav-system-shuffle-btn {
+  transition: background 0.28s ease, color 0.22s ease,
+              border-color 0.22s ease, box-shadow 0.22s ease,
+              transform 0.15s ease, opacity 0.2s ease;
+}

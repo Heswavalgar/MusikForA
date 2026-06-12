@@ -1,0 +1,253 @@
+/* ============================================================
+   sidebar.css — Sidebar, Bottom Nav, Toast
+   MusikForAll
+   ============================================================ */
+
+/* ── SIDEBAR ─────────────────────────────────────────────── */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 280px;
+  height: 100vh;
+  background: var(--grad-surface, var(--surface2));
+  border-right: 1px solid var(--border);
+  z-index: 99998;
+  transition: left 0.3s ease;
+  padding: 0;
+  overflow-y: auto;
+}
+
+.sidebar.open { left: 0; }
+
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.3s;
+  z-index: 9997;
+}
+.sidebar-overlay.show { opacity: 1; visibility: visible; }
+
+.sidebar-header {
+  padding: 48px 20px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.sidebar-app-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  color: var(--accent-btn-text);
+}
+
+.sidebar-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.sidebar-logo-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.sidebar-logo-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.sidebar-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.sidebar-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.sidebar-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+.sidebar-username {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.sidebar-role { font-size: 12px; color: var(--subtext); margin-top: 2px; }
+
+.sidebar-menu { padding: 12px; }
+
+.sidebar-item {
+  width: 100%;
+  padding: 14px 16px;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: background 0.15s;
+  display: block;
+}
+.sidebar-item:hover { background: var(--surface2); }
+
+.logout-btn { color: #f87171; }
+
+.sidebar-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px;
+  border-top: 1px solid var(--border);
+}
+
+/* ── SIDEBAR PAGES (Pengaturan, Langganan, etc.) ─────────── */
+.sidebar-page-content {
+  padding: 24px 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.sidebar-page-content h2 { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin: 0; }
+.sidebar-page-content > p { color: var(--subtext); font-size: 13px; margin: 0; }
+
+.sp-icon { font-size: 40px; }
+
+.sp-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--surface);
+  border-radius: 14px;
+  font-size: 14px;
+}
+.sp-value { color: var(--subtext); font-size: 13px; }
+
+.sp-plan {
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+}
+.sp-plan.premium { border: 1px solid var(--accent); }
+.sp-plan-name { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; }
+.sp-plan-desc { font-size: 12px; color: var(--subtext); }
+.sp-plan-price { font-size: 14px; color: var(--accent); font-weight: 600; margin-top: 4px; }
+.sp-plan-badge {
+  position: absolute; top: 12px; right: 12px;
+  font-size: 11px; padding: 3px 8px; border-radius: 20px;
+  background: var(--surface2); color: var(--subtext);
+}
+.sp-plan-badge.active { background: rgba(200,240,96,0.15); color: var(--accent); }
+
+.sp-stat { background: var(--surface); border-radius: 14px; padding: 16px; text-align: center; }
+.sp-stat-num { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: var(--accent); }
+.sp-stat-label { font-size: 12px; color: var(--subtext); margin-top: 4px; }
+
+/* ── BOTTOM NAV ──────────────────────────────────────────── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  background: var(--grad-nav, var(--surface));
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 300;
+}
+
+.bottom-item {
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: var(--subtext);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 12px;
+  transition: color 0.2s;
+  flex: 1;
+}
+.bottom-item .nav-icon { font-size: 20px; }
+.bottom-item.active { color: var(--accent); }
+
+/* ── TOAST ───────────────────────────────────────────────── */
+#toast {
+  position: fixed;
+  bottom: calc(var(--player-h) + var(--nav-h) + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 10px 18px;
+  border-radius: 20px;
+  font-size: 13px;
+  display: none;
+  z-index: 500;
+  white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  transform: translateX(-50%) translateY(6px);
+  max-width: calc(100vw - 48px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ── CLICKABLE USERNAME ──────────────────────────────────── */
+.clickable-username {
+  cursor: pointer;
+  transition: color 0.2s;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+.clickable-username:hover { color: var(--accent); }

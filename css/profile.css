@@ -1,0 +1,233 @@
+/* ============================================================
+   profile.css — Profile Page & Inbox/Chat
+   MusikForAll
+   ============================================================ */
+
+/* ── PROFILE PAGE ────────────────────────────────────────── */
+.profile-page {
+  position: fixed; inset: 0;
+  background: var(--bg); z-index: 600;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.profile-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px 8px; flex-shrink: 0; }
+.profile-share-btn {
+  background: var(--surface); border: 1px solid var(--border); color: var(--text);
+  width: 36px; height: 36px; border-radius: 50%; font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.profile-scroll { flex: 1; overflow-y: auto; padding: 8px 20px 48px; }
+
+/* AVATAR */
+.profile-avatar-section { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 12px 0 20px; }
+.profile-avatar-wrap    { position: relative; }
+.profile-avatar-big {
+  width: 110px; height: 110px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 3px solid var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 48px; overflow: hidden; cursor: pointer;
+}
+.profile-avatar-big img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+.profile-photo-actions { display: flex; gap: 10px; align-items: center; }
+.profile-upload-btn {
+  background: var(--surface); border: 1px solid var(--border); color: var(--text);
+  border-radius: 20px; padding: 8px 18px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer;
+  transition: background 0.2s;
+}
+.profile-upload-btn:hover { background: var(--surface2); }
+.profile-delete-btn {
+  background: transparent; border: 1px solid rgba(248,113,113,0.3); color: #f87171;
+  border-radius: 20px; padding: 8px 14px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer;
+  transition: background 0.2s;
+}
+.profile-delete-btn:hover { background: rgba(248,113,113,0.1); }
+
+/* CROP OVERLAY */
+.profile-avatar-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.92); z-index: 9999;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 16px; padding: 24px;
+}
+#cropCanvas { border-radius: 50%; border: 3px solid var(--accent); max-width: 280px; max-height: 280px; touch-action: none; }
+.crop-hint   { font-size: 13px; color: var(--subtext); }
+.crop-actions { display: flex; gap: 12px; }
+.crop-btn { padding: 12px 28px; border-radius: 12px; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; border: none; }
+.crop-btn.primary   { background: var(--accent); color: #0a0a0f; }
+.crop-btn.secondary { background: var(--surface2); color: var(--text); }
+
+/* FIELDS */
+.profile-fields { display: flex; flex-direction: column; gap: 10px; }
+.profile-field-card  { background: var(--surface); border-radius: 14px; padding: 14px 16px; }
+.profile-field-label { font-size: 11px; color: var(--subtext); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.profile-field-row   { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.profile-field-value { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 600; flex: 1; word-break: break-all; }
+.profile-field-value.muted { color: var(--subtext); font-family: 'DM Sans', sans-serif; font-weight: 400; font-size: 14px; }
+.profile-field-edit  { background: none; border: none; font-size: 16px; cursor: pointer; opacity: 0.5; flex-shrink: 0; padding: 4px; transition: opacity 0.2s; }
+.profile-field-edit:hover { opacity: 1; }
+
+/* ACTIONS */
+.profile-actions-section { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+.profile-action-btn {
+  width: 100%; padding: 14px 16px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); border-radius: 14px;
+  font-family: 'DM Sans', sans-serif; font-size: 14px; text-align: left;
+  cursor: pointer; transition: background 0.15s;
+}
+.profile-action-btn:hover { background: var(--surface2); }
+
+/* ── INBOX PAGE ──────────────────────────────────────────── */
+.inbox-wrap { padding: 16px 0 80px; }
+.inbox-section-label { font-size: 11px; font-weight: 700; color: var(--subtext); text-transform: uppercase; letter-spacing: 1.5px; padding: 0 20px 8px; }
+
+.inbox-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 20px;
+  background: var(--surface);
+  cursor: pointer; transition: background 0.15s;
+  border-bottom: 1px solid var(--border);
+}
+.inbox-item:first-of-type { border-top: 1px solid var(--border); }
+.inbox-item:active { background: var(--surface2); }
+
+.inbox-avatar { width: 46px; height: 46px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.inbox-info   { flex: 1; min-width: 0; }
+.inbox-name    { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+.inbox-preview { font-size: 13px; color: var(--subtext); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.inbox-chevron { font-size: 22px; color: var(--subtext); flex-shrink: 0; }
+
+/* ── INBOX SUB PAGES ─────────────────────────────────────── */
+#inboxFriendPage,
+#inboxSistemPage,
+#inboxAppPage,
+#inboxUpdatePage { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+
+.inbox-sub-body { flex: 1; overflow-y: auto; padding: 8px 0 32px; }
+
+.inbox-notif-item { display: flex; gap: 14px; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.inbox-notif-icon { width: 42px; height: 42px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.inbox-notif-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.inbox-notif-desc  { font-size: 13px; color: var(--subtext); line-height: 1.5; margin-bottom: 6px; }
+.inbox-notif-time  { font-size: 11px; color: var(--subtext); opacity: 0.6; }
+
+/* ── FRIENDS ─────────────────────────────────────────────── */
+.inbox-friend-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.inbox-search-wrap { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+.inbox-friend-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text); padding: 40px 24px; text-align: center; }
+
+.friend-section-label { padding: 14px 20px 6px; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; color: var(--subtext); text-transform: uppercase; letter-spacing: 1.5px; }
+.friend-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+.friend-item:active { background: var(--surface2); }
+.friend-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; border: 1px solid var(--border); }
+.friend-info { flex: 1; min-width: 0; }
+.friend-name { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.friend-meta { font-size: 12px; color: var(--subtext); margin-top: 2px; }
+
+.friend-add-btn    { padding: 7px 14px; background: var(--grad-accent, var(--accent)); color: var(--accent-btn-text); border: none; border-radius: 20px; font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: opacity 0.2s; }
+.friend-add-btn:hover    { opacity: 0.85; }
+.friend-add-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.friend-cancel-btn { padding: 7px 14px; background: transparent; color: var(--subtext); border: 1px solid var(--border); border-radius: 20px; font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: color 0.2s, border-color 0.2s; }
+.friend-cancel-btn:hover { color: var(--text); border-color: var(--subtext); }
+
+.friend-status-badge { font-size: 12px; color: var(--subtext); white-space: nowrap; flex-shrink: 0; }
+.friend-status-badge.pending { color: var(--accent); }
+
+.friend-req-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.friend-accept-btn { padding: 7px 12px; background: var(--grad-accent, var(--accent)); color: var(--accent-btn-text); border: none; border-radius: 20px; font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+.friend-accept-btn:hover    { opacity: 0.85; }
+.friend-accept-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.friend-reject-btn,
+.friend-remove-btn { width: 32px; height: 32px; background: transparent; color: var(--subtext); border: 1px solid var(--border); border-radius: 50%; font-size: 14px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: color 0.2s, border-color 0.2s; }
+.friend-reject-btn:hover,
+.friend-remove-btn:hover { color: #f43f5e; border-color: #f43f5e; }
+
+.friend-chat-btn { width: 32px; height: 32px; background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 50%; font-size: 15px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: background 0.2s, border-color 0.2s; }
+.friend-chat-btn:hover { background: var(--accent); border-color: var(--accent); color: var(--accent-btn-text); }
+
+/* ── CHAT PAGE ───────────────────────────────────────────── */
+#chatPage { display: flex; flex-direction: column; position: fixed; inset: 0; z-index: 500; background: var(--bg); }
+
+.chat-header { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--grad-topbar, var(--bg)); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.chat-header-info   { display: flex; align-items: center; gap: 10px; flex: 1; }
+.chat-header-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; border: 1px solid var(--border); }
+.chat-header-name   { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); }
+.chat-header-status { font-size: 11px; color: var(--subtext); }
+
+.chat-messages { flex: 1; overflow-y: auto; padding: 16px 12px 8px; display: flex; flex-direction: column; gap: 4px; }
+.chat-loading  { text-align: center; color: var(--subtext); font-size: 13px; padding: 24px; }
+
+.chat-msg-wrap       { display: flex; }
+.chat-msg-wrap.mine  { justify-content: flex-end; }
+.chat-msg-wrap.theirs{ justify-content: flex-start; }
+
+.chat-bubble { max-width: 72vw; padding: 10px 12px 6px; border-radius: 18px; font-size: 14px; line-height: 1.45; position: relative; word-break: break-word; }
+.chat-bubble.mine   { background: var(--grad-accent, var(--accent)); color: var(--accent-btn-text); border-bottom-right-radius: 4px; }
+.chat-bubble.theirs { background: var(--surface2); color: var(--text); border-bottom-left-radius: 4px; }
+.chat-text { margin-bottom: 2px; }
+.chat-meta  { font-size: 10px; opacity: 0.65; display: flex; gap: 4px; justify-content: flex-end; align-items: center; margin-top: 3px; }
+.chat-read  { color: inherit; }
+.chat-unread{ color: inherit; opacity: 0.5; }
+
+.chat-bubble-img  { padding: 4px 4px 6px; }
+.chat-img { width: 200px; max-width: 60vw; border-radius: 14px; display: block; cursor: pointer; object-fit: cover; }
+
+.chat-bubble-song { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px 12px; min-width: 200px; }
+.chat-bubble-song:active { opacity: 0.85; }
+.chat-song-cover { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+.chat-song-cover-placeholder { width: 44px; height: 44px; border-radius: 8px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.chat-song-info    { flex: 1; min-width: 0; }
+.chat-song-title   { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chat-song-artist  { font-size: 11px; opacity: 0.7; margin-top: 2px; }
+.chat-song-play    { font-size: 11px; opacity: 0.6; margin-top: 4px; }
+
+.chat-input-bar { flex-shrink: 0; background: var(--surface); border-top: 1px solid var(--border); padding: 8px 12px 12px; }
+.chat-input-row { display: flex; align-items: center; gap: 8px; }
+.chat-input { flex: 1; padding: 10px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 22px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: border-color 0.2s; }
+.chat-input:focus { border-color: var(--accent); }
+.chat-send-btn { width: 40px; height: 40px; border-radius: 50%; background: var(--grad-accent, var(--accent)); color: var(--accent-btn-text); border: none; font-size: 16px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s; }
+.chat-send-btn:hover    { opacity: 0.85; }
+.chat-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.chat-attach-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border); font-size: 16px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+.chat-attach-btn:hover { background: var(--surface); }
+
+.chat-attach-menu { display: flex; gap: 8px; padding: 8px 0 4px; }
+.chat-attach-item { padding: 8px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: background 0.15s; }
+.chat-attach-item:hover { background: var(--surface); }
+
+.chat-img-preview { position: relative; display: inline-block; margin-bottom: 8px; }
+.chat-img-preview img { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; display: block; }
+.chat-img-preview-cancel { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; background: #f43f5e; color: #fff; border: none; font-size: 11px; cursor: pointer; line-height: 1; display: flex; align-items: center; justify-content: center; }
+
+.chat-song-preview { display: flex; align-items: center; gap: 8px; padding: 8px 12px; margin-bottom: 8px; background: var(--surface2); border-radius: 12px; border: 1px solid var(--border); }
+.chat-song-preview-icon  { font-size: 18px; }
+.chat-song-preview-title { flex: 1; font-size: 13px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.chat-song-pick-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; cursor: pointer; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+.chat-song-pick-item:active { background: var(--surface2); }
+.chat-song-pick-cover    { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+.chat-song-pick-cover-ph { width: 40px; height: 40px; border-radius: 8px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.chat-song-pick-title  { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); }
+.chat-song-pick-artist { font-size: 12px; color: var(--subtext); }
+
+/* ── THEME SELECTOR ──────────────────────────────────────── */
+.theme-selector { display: flex; gap: 6px; background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; padding: 4px; }
+.theme-btn { flex: 1; padding: 7px 10px; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; background: transparent; color: var(--subtext); transition: background 0.18s, color 0.18s, box-shadow 0.18s; white-space: nowrap; text-align: center; }
+.theme-btn.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 6px var(--shadow); font-weight: 600; }
+
+/* ── TOGGLE SWITCH ───────────────────────────────────────── */
+.theme-toggle-wrap { display: flex; align-items: center; gap: 10px; }
+.theme-label       { font-size: 13px; color: var(--subtext); min-width: 52px; text-align: right; }
+.toggle-switch     { position: relative; width: 48px; height: 26px; flex-shrink: 0; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+.toggle-track { position: absolute; inset: 0; background: var(--surface2); border-radius: 999px; cursor: pointer; transition: background 0.25s; border: 1px solid var(--border); }
+.toggle-switch input:checked + .toggle-track { background: var(--accent); }
+.toggle-track::after { content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--text); transition: transform 0.25s; }
+.toggle-switch input:checked + .toggle-track::after { transform: translateX(22px); background: var(--accent-btn-text); }
